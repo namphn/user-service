@@ -143,4 +143,9 @@ public class UserRepositoryCustom implements UserRepository {
     public boolean exists(Predicate predicate) {
         return false;
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return null;
+    }
 }

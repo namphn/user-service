@@ -9,4 +9,6 @@ import web.service.user.model.User;
 
 @Repository
 public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User> {
+
+    public User findByEmail(String email);
 }
