@@ -14,11 +14,9 @@ public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
     private String name;
 
-    public Role(int id, String roleName){
-        this.id = id;
+    public Role(String roleName){
         this.name = roleName;
     }
 }
