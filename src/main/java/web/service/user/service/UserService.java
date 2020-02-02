@@ -8,32 +8,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
-import web.service.user.repository.UserRepositoryCustom;
+import web.service.user.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    private final UserRepositoryCustom userRepositoryCustom;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserService(UserRepositoryCustom userRepositoryCustom) {
-        this.userRepositoryCustom = userRepositoryCustom;
-    }
-
-    public UserService() {
-        this.userRepositoryCustom = new UserRepositoryCustom();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String userEmai) throws UsernameNotFoundException {
-
-        User user = userRepositoryCustom.findByEmail(userEmai);
-        if(user == null) {
-            throw new UsernameNotFoundException(userEmai);
-        }
-        return new UserDetailCustom(user);
-    }
     @Bean
     public UserService getUserService(){
         return new UserService();
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+
+        User user = userRepository.findByEmail(userEmail);
+        if(user == null) {
+            throw new UsernameNotFoundException(userEmail);
+        }
+        return new UserDetailCustom(user);
+    }
+
+
+
 }

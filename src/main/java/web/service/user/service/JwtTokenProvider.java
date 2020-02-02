@@ -1,14 +1,16 @@
 package web.service.user.service;
 
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import web.service.user.model.UserDetailCustom;
-
 import java.util.Date;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
-
+@Component
+@Slf4j
 public class JwtTokenProvider {
-    private final String JWT_SCRET = "lBkt8u0eBIKr0";
+    private final String JWT_SECRET = "lBkt8u0eBIKr0";
 
     private final long JWT_EXPIRATION = 60480000L;
 
@@ -20,23 +22,23 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(userDetailCustom.getUser().getEmail())
                 .setIssuedAt(now)
-                .signWith(SignatureAlgorithm.HS512, JWT_SCRET)
+                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .compact();
     }
 
     /** kiểm tra token */
     public boolean validateToken(String token){
         try {
-            Jwts.parser().setSigningKey(JWT_SCRET).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex){
-            log.print("Invalid JWT Token");
+            log.error("Invalid JWT Token");
         } catch (ExpiredJwtException ex){
-            log.print("Expired JWT Token");
+            log.error("Expired JWT Token");
         } catch (UnsupportedJwtException ex) {
-            log.print("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.print("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         }
         return false;
     }
@@ -44,7 +46,7 @@ public class JwtTokenProvider {
     /** lấy email của user */
     public String getUserEmailFromJwt(String oauthToken){
         Claims claims = Jwts.parser()
-                            .setSigningKey(JWT_SCRET)
+                            .setSigningKey(JWT_SECRET)
                             .parseClaimsJws(oauthToken)
                             .getBody();
 

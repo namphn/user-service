@@ -12,16 +12,16 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Bean
     public MongoClient mongoClient() {
-        return new MongoClient("localhost", 2707);
+        return new MongoClient("127.0.0.1", 27017);
     }
 
     @Bean
     protected String getDatabaseName() {
-        return "user";
+        return "webservice";
     }
 
     @Bean
     public MongoTemplate mongoTemplate(){
-        return new MongoTemplate(mongoClient(),"user");
+        return new MongoTemplate(mongoClient(),"webservice");
     }
 }

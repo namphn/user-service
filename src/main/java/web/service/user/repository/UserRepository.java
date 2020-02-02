@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import web.service.user.model.User;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User> {
-
+public interface UserRepository extends MongoRepository<User, String>{
     public User findByEmail(String email);
 }

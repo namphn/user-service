@@ -4,6 +4,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,11 @@ public class UserRepositoryCustom implements UserRepository {
 
     @Autowired
     MongoConfig mongoConfig;
+
+    @Bean
+    public UserRepository getUserRepository(){
+        return new UserRepositoryCustom();
+    }
 
     public void insertUser(User user) {
         MongoTemplate mongoTemplate = mongoConfig.mongoTemplate();
@@ -45,7 +51,8 @@ public class UserRepositoryCustom implements UserRepository {
     }
 
     public <S extends User> S save(S entity) {
-        return null;
+        mongoConfig.mongoTemplate().save(entity);
+        return entity;
     }
 
     public <S extends User> List<S> saveAll(Iterable<S> entities) {
