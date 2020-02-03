@@ -1,5 +1,6 @@
 package web.service.user.service;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,38 +21,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
+
+
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwt = getJwtFromRequest(request);
+        final String requestTokenHeader = request.getHeader("Authorization");
 
-            if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)){
-                String userEmail = tokenProvider.getUserEmailFromJwt(jwt);
+        String userName = null;
+        String jwtToken = null;
 
-                UserDetails userDetails = userService.loadUserByUsername(userEmail);
+        if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer")) {
+            jwtToken = requestTokenHeader.substring(7);
+            try {
+                userName = tokenProvider.getUsernameFromToken(jwtToken);
 
-                if(userDetails != null){
-                    UsernamePasswordAuthenticationToken authenticationToken
-                            = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
+            } catch (Exception ex) {
+                logger.error("failed on set user authentication", ex);
             }
-        } catch (Exception ex) {
-            logger.error("failed on set user authentication", ex);
+        } else {
+            logger.warn("JWT does not begin with Bearer String");
         }
 
-        filterChain.doFilter(request, response);
+        if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
+
+            UserDetails userDetails = this.userService.loadUserByUsername(userName);
+
+            if(tokenProvider.validateToken(jwtToken, userDetails)){
+
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                        = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+        }
+        filterChain.doFilter(request,response);
     }
 
-    /** lấy token từ request header */
-    private String getJwtFromRequest(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")){
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
 }

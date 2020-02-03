@@ -1,15 +1,15 @@
 package web.service.user.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import web.service.user.config.MongoConfig;
 import web.service.user.model.User;
@@ -18,141 +18,129 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-@Repository
+@NoArgsConstructor
+@Deprecated
 public class UserRepositoryCustom implements UserRepository {
 
-    @Autowired
     MongoConfig mongoConfig;
 
-    @Bean
-    public UserRepository getUserRepository(){
-        return new UserRepositoryCustom();
+    public UserRepositoryCustom(MongoConfig mongoConfig) {
+        this.mongoConfig = mongoConfig;
     }
 
-    public void insertUser(User user) {
-        MongoTemplate mongoTemplate = mongoConfig.mongoTemplate();
-        mongoTemplate.insert(user);
+
+    @Override
+    public User findByUserName(String userName) {
+        mongoConfig = new MongoConfig();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userName").is(userName));
+        User user = (User) mongoConfig.mongoTemplate().findOne(query, User.class);
+        return user;
     }
 
-    public void deleteById(String id) {
-
+    @Override
+    public <S extends User> S save(S s) {
+        mongoConfig.mongoTemplate().save(s);
+        return s;
     }
 
-    public void delete(User entity) {
-
-    }
-
-    public void deleteAll(Iterable<? extends User> entities) {
-
-    }
-
-    public void deleteAll() {
-
-    }
-
-    public <S extends User> S save(S entity) {
-        mongoConfig.mongoTemplate().save(entity);
-        return entity;
-    }
-
-    public <S extends User> List<S> saveAll(Iterable<S> entities) {
+    @Override
+    public <S extends User> List<S> saveAll(Iterable<S> iterable) {
         return null;
     }
 
+    @Override
     public Optional<User> findById(String s) {
         return Optional.empty();
     }
 
+    @Override
     public boolean existsById(String s) {
         return false;
     }
 
+    @Override
     public List<User> findAll() {
         return null;
     }
 
-    public Iterable<User> findAllById(Iterable<String> strings) {
+    @Override
+    public Iterable<User> findAllById(Iterable<String> iterable) {
         return null;
     }
 
+    @Override
     public long count() {
         return 0;
     }
 
+    @Override
+    public void deleteById(String s) {
+
+    }
+
+    @Override
+    public void delete(User user) {
+
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends User> iterable) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
     public List<User> findAll(Sort sort) {
         return null;
     }
 
+    @Override
     public Page<User> findAll(Pageable pageable) {
         return null;
     }
 
-    public <S extends User> S insert(S entity) {
+    @Override
+    public <S extends User> S insert(S s) {
         return null;
     }
 
-    public <S extends User> List<S> insert(Iterable<S> entities) {
+    @Override
+    public <S extends User> List<S> insert(Iterable<S> iterable) {
         return null;
     }
 
+    @Override
     public <S extends User> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
+    @Override
     public <S extends User> List<S> findAll(Example<S> example) {
         return null;
     }
 
+    @Override
     public <S extends User> List<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
+    @Override
     public <S extends User> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
+    @Override
     public <S extends User> long count(Example<S> example) {
         return 0;
     }
 
+    @Override
     public <S extends User> boolean exists(Example<S> example) {
         return false;
-    }
-
-    public Optional<User> findOne(Predicate predicate) {
-        return Optional.empty();
-    }
-
-    public Iterable<User> findAll(Predicate predicate) {
-        return null;
-    }
-
-    public Iterable<User> findAll(Predicate predicate, Sort sort) {
-        return null;
-    }
-
-    public Iterable<User> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
-        return null;
-    }
-
-    public Iterable<User> findAll(OrderSpecifier<?>... orders) {
-        return null;
-    }
-
-    public Page<User> findAll(Predicate predicate, Pageable pageable) {
-        return null;
-    }
-
-    public long count(Predicate predicate) {
-        return 0;
-    }
-
-    public boolean exists(Predicate predicate) {
-        return false;
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return null;
     }
 }

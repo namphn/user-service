@@ -9,12 +9,20 @@ import org.springframework.stereotype.Service;
 import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
 import web.service.user.repository.UserRepository;
+import web.service.user.repository.UserRepositoryCustom;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepositoryCustom;
+
+    public UserService(UserRepositoryCustom userRepositoryCustom) {
+        this.userRepositoryCustom = userRepositoryCustom;
+    }
+
+    public UserService() {
+        this.userRepositoryCustom = new UserRepositoryCustom();
+    }
 
     @Bean
     public UserService getUserService(){
@@ -22,15 +30,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userRepositoryCustom.findByUserName(s);
 
-        User user = userRepository.findByEmail(userEmail);
+        System.out.println(user);
         if(user == null) {
-            throw new UsernameNotFoundException(userEmail);
+            throw new UsernameNotFoundException(s);
         }
         return new UserDetailCustom(user);
     }
-
-
-
+    @Bean
+    JwtAuthenticationFilter jwtAuthenticationFilterBean(){
+        return new JwtAuthenticationFilter();
+    }
 }
