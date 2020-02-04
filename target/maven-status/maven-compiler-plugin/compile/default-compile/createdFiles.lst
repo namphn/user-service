@@ -1,5 +1,0 @@
-web\service\user\repository\UserRepository.class
-web\service\user\config\MongoConfig.class
-web\service\user\repository\Main.class
-web\service\user\service\UserService.class
-web\service\user\model\User.class

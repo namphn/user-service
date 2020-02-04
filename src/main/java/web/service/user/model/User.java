@@ -1,6 +1,9 @@
 package web.service.user.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,19 +13,21 @@ import java.util.Set;
 
 @Data
 @Document(collection = "users")
+@NoArgsConstructor
 public class User {
 
     @Id
     private String id;
-
+    private VerificationToken verificationToken;
     private String password;
-    private String userName;
+    private String email;
 
-    public User(String userName, String password){
+    @Getter @Setter
+    private boolean enable;
 
+    public User(String email, String password){
         this.password = password;
-        this.userName = userName;
-
+        this.email = email;
     }
 
 

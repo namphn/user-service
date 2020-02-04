@@ -3,10 +3,10 @@ package web.service.user.service;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -32,8 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String userName = null;
         String jwtToken = null;
 
-        if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer")) {
+        if(requestTokenHeader != null) {
             jwtToken = requestTokenHeader.substring(7);
+            System.out.println(jwtToken);
             try {
                 userName = tokenProvider.getUsernameFromToken(jwtToken);
 

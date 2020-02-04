@@ -30,10 +30,10 @@ public class UserRepositoryCustom implements UserRepository {
 
 
     @Override
-    public User findByUserName(String userName) {
+    public User findByEmail(String email) {
         mongoConfig = new MongoConfig();
         Query query = new Query();
-        query.addCriteria(Criteria.where("userName").is(userName));
+        query.addCriteria(Criteria.where("email").is(email));
         User user = (User) mongoConfig.mongoTemplate().findOne(query, User.class);
         return user;
     }

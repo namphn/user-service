@@ -6,5 +6,5 @@ import web.service.user.model.User;
 
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
-    public User findByUserName(String useName);
+    public User findByEmail(String email);
 }
