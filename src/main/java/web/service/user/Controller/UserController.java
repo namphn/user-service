@@ -41,9 +41,6 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
-    @Autowired
     private VerificationTokenRegistrationService verificationService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -70,31 +67,6 @@ public class UserController {
         return "hello";
     }
 
-
-//    @GetMapping("/registrationConfirm")
-//    public String confirmRegistration
-//            (WebRequest request, Model model, @RequestParam("token") String token){
-//
-//        Locale locale = request.getLocale();
-//
-//        VerificationToken verificationToken = registrationAccountService.getVerificationToken(token);
-//        if (verificationToken == null) {
-//            String message = "auth.message.invalidToken" + locale;
-//            model.addAttribute("message", message);
-//            return "redirect:/badUser.html?lang=" + locale.getLanguage();
-//        }
-//        User user = verificationToken.getUser();
-//        Calendar cal = Calendar.getInstance();
-//        if ((verificationToken.getExpiryDate().get - cal.getTime().getTime()) <= 0) {
-//            String messageValue = "auth.message.expired" + locale;
-//            model.addAttribute("message", messageValue);
-//            return "redirect:/badUser.html?lang=" + locale.getLanguage();
-//        }
-//
-//        user.setEnable(true);
-//        registrationAccountService.saveRegisteredUser(user);
-//        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
-//    }
 
     @PostMapping("/verification")
     public String verifyEmail(@Valid @RequestBody LoginRequest loginRequest){
