@@ -37,7 +37,7 @@ public class JwtTokenProvider {
     }
 
 
-    public String getUsernameFromToken(String token) throws NoSuchAlgorithmException {
+    public String getEmailFromToken(String token) throws NoSuchAlgorithmException {
 
         return getClaimFromToken(token, Claims::getSubject);
 
@@ -68,7 +68,7 @@ public class JwtTokenProvider {
 
     public Boolean validateToken(String token, UserDetails userDetails) throws NoSuchAlgorithmException {
         System.out.println(userDetails.getUsername());
-        final String username = getUsernameFromToken(token);
+        final String username = getEmailFromToken(token);
 
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 

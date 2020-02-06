@@ -1,46 +1,36 @@
 package web.service.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import web.service.user.model.User;
+import web.service.grpc.LoginRequest;
+import web.service.grpc.LoginResponse;
 import web.service.user.model.UserDetailCustom;
-import web.service.user.repository.UserRepository;
-import web.service.user.repository.UserRepositoryCustom;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
-    private final UserRepository userRepositoryCustom;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailServiceCustom userDetailServiceCustom;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserService(UserRepositoryCustom userRepositoryCustom) {
-        this.userRepositoryCustom = userRepositoryCustom;
+    public UserService(AuthenticationManager authenticationManager, UserDetailServiceCustom userDetailServiceCustom, JwtTokenProvider jwtTokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailServiceCustom = userDetailServiceCustom;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public UserService() {
-        this.userRepositoryCustom = new UserRepositoryCustom();
-    }
+    public LoginResponse authenticateUser(LoginRequest loginRequest){
 
-    @Bean
-    public UserService getUserService(){
-        return new UserService();
-    }
-
-    @Override
-    public UserDetailCustom loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userRepositoryCustom.findByEmail(s);
-
-        System.out.println(user);
-        if(user == null) {
-            throw new UsernameNotFoundException(s);
-        }
-        return new UserDetailCustom(user);
-    }
-    @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilterBean(){
-        return new JwtAuthenticationFilter();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword()
+            ));
+        final UserDetailCustom userDetails = userDetailServiceCustom.loadUserByEmail(loginRequest.getEmail());
+        final String token = jwtTokenProvider.generateToken(userDetails);
+        LoginResponse.Builder response = LoginResponse.newBuilder();
+        response.setStatus("jwt have created");
+        response.setToken(token);
+        return response.build();
     }
 }

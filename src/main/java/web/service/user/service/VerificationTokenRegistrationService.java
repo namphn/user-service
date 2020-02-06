@@ -1,6 +1,5 @@
 package web.service.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
@@ -13,14 +12,15 @@ import java.time.LocalDateTime;
 @Service
 public class VerificationTokenRegistrationService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
-    @Autowired
-    private SendingMailService sendingMailService;
+    private final UserRepository userRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
-    public void createVerification(String email){
+    public VerificationTokenRegistrationService(UserRepository userRepository, VerificationTokenRepository verificationTokenRepository) {
+        this.userRepository = userRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+    }
+
+    public VerificationToken createVerification(String email){
         User user = userRepository.findByEmail(email);
         if(user == null){
             user = new User();
@@ -34,7 +34,7 @@ public class VerificationTokenRegistrationService {
             verificationTokenRepository.save(verificationToken);
         }
 
-        sendingMailService.sendVerificationMail(email,verificationToken.getToken());
+        return verificationToken;
     }
 
     public ResponseEntity<String> verifyEmail(String token){
@@ -47,10 +47,13 @@ public class VerificationTokenRegistrationService {
             return ResponseEntity.badRequest().body("Expired token");
         }
 
+        /**
+         * có nên lưu lại token đã confirm ?
+         */
+
         verificationToken.setConfirmDateTime(LocalDateTime.now());
         verificationToken.setStatus(VerificationToken.STATUS_VERIFIED);
         verificationTokenRepository.save(verificationToken);
-
         return ResponseEntity.ok("You are successfully verify your email address");
     }
 }

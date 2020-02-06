@@ -14,29 +14,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import web.service.user.model.CustomAuthenticationManager;
-import web.service.user.repository.UserRepository;
-import web.service.user.repository.UserRepositoryCustom;
-import web.service.user.repository.VerificationTokenRepository;
-import web.service.user.repository.VerificationTokenRepositoryCustom;
 import web.service.user.service.JwtAuthenticationEntryPoint;
 import web.service.user.service.JwtAuthenticationFilter;
-import web.service.user.service.UserService;
+import web.service.user.service.UserDetailServiceCustom;
+
 
 @EnableWebSecurity
 public class WebSecrityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserService userService;
+    private final UserDetailServiceCustom userDetailServiceCustom;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public WebSecrityConfig(UserDetailServiceCustom userDetailServiceCustom, JwtAuthenticationEntryPoint authenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.userDetailServiceCustom = userDetailServiceCustom;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailServiceCustom).passwordEncoder(passwordEncoder());
     }
 
 
@@ -57,24 +55,14 @@ public class WebSecrityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    MongoConfig mongoConfigBean(){
+    public MongoConfig mongoConfigBean(){
         return new MongoConfig();
-    }
-
-    @Bean
-    UserRepository userRepositoryBean(){
-        return new UserRepositoryCustom();
-    }
-
-    @Bean
-    VerificationTokenRepository verificationTokenRepositoryBean(){
-        return new VerificationTokenRepositoryCustom();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userDetailServiceCustom)
                 .passwordEncoder(passwordEncoder());
     }
 
@@ -85,7 +73,7 @@ public class WebSecrityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login","/user/verification", "/user/registrationConfirm").permitAll()
+                .antMatchers("/user/login","user/verification", "user/registrationConfirm", "/user/forgot-password").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -105,6 +93,6 @@ public class WebSecrityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SendGrid sendGridBean(){
-        return new SendGrid("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");
+        return new SendGrid("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");
     }
 }

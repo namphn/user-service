@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoRepositories
-@Deprecated
 public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override

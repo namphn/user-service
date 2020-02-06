@@ -1,4 +1,4 @@
-package web.service.user.model;
+package web.service.user.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

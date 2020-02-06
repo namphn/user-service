@@ -18,9 +18,10 @@ public class User {
 
     @Id
     private String id;
-    private VerificationToken verificationToken;
     private String password;
     private String email;
+    private String userName;
+    private String phone;
 
     @Getter @Setter
     private boolean enable;
