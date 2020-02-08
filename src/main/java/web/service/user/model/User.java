@@ -1,7 +1,11 @@
 package web.service.user.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import web.service.user.repository.UserRepository;
 
@@ -9,25 +13,22 @@ import java.util.Set;
 
 @Data
 @Document(collection = "users")
+@NoArgsConstructor
 public class User {
-    private String name;
+
+    @Id
+    private String id;
     private String password;
     private String email;
-    private String address;
-    private String phoneNumber;
-    private Set<Role> roles;
+    private String userName;
+    private String phone;
 
-    @Autowired
-    public static UserRepository userRepository;
+    @Getter @Setter
+    private boolean enable;
 
-    public User(String name, String password, String email, String address, String phoneNumber,
-                Set<Role> roles){
-        this.name = name;
+    public User(String email, String password){
         this.password = password;
         this.email = email;
-        this.address =address;
-        this.phoneNumber = phoneNumber;
-        this.roles = roles;
     }
 
 

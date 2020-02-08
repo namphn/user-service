@@ -1,14 +1,25 @@
 package web.service.user.service;
 
 import io.jsonwebtoken.*;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import web.service.user.model.UserDetailCustom;
-
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
-
+@Component
+@Slf4j
+@NoArgsConstructor
 public class JwtTokenProvider {
-    private final String JWT_SCRET = "lBkt8u0eBIKr0";
+
+    private final long serialVersionUID = -2550185165626007488L;
+
+    private final String JWT_SECRET = "lBkt8u0eBIKr0";
 
     private final long JWT_EXPIRATION = 60480000L;
 
@@ -20,34 +31,53 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(userDetailCustom.getUser().getEmail())
                 .setIssuedAt(now)
-                .signWith(SignatureAlgorithm.HS512, JWT_SCRET)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .compact();
     }
 
-    /** kiểm tra token */
-    public boolean validateToken(String token){
-        try {
-            Jwts.parser().setSigningKey(JWT_SCRET).parseClaimsJws(token);
-            return true;
-        } catch (MalformedJwtException ex){
-            log.print("Invalid JWT Token");
-        } catch (ExpiredJwtException ex){
-            log.print("Expired JWT Token");
-        } catch (UnsupportedJwtException ex) {
-            log.print("Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            log.print("JWT claims string is empty.");
-        }
-        return false;
+
+    public String getEmailFromToken(String token) throws NoSuchAlgorithmException {
+
+        return getClaimFromToken(token, Claims::getSubject);
+
     }
 
-    /** lấy email của user */
-    public String getUserEmailFromJwt(String oauthToken){
-        Claims claims = Jwts.parser()
-                            .setSigningKey(JWT_SCRET)
-                            .parseClaimsJws(oauthToken)
-                            .getBody();
+    public Date getExpirationDateFromToken(String token) throws NoSuchAlgorithmException {
 
-        return claims.getSubject();
+        return getClaimFromToken(token, Claims::getExpiration);
+
     }
+
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) throws NoSuchAlgorithmException {
+
+        final Claims claims = getAllClaimsFromToken(token);
+
+        return claimsResolver.apply(claims);
+
+    }
+    private Boolean isTokenExpired(String token) throws NoSuchAlgorithmException {
+
+        final Date expiration = getExpirationDateFromToken(token);
+
+        return expiration.before(new Date());
+
+    }
+
+
+
+    public Boolean validateToken(String token, UserDetails userDetails) throws NoSuchAlgorithmException {
+        System.out.println(userDetails.getUsername());
+        final String username = getEmailFromToken(token);
+
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+
+    }
+    private Claims getAllClaimsFromToken(String token) throws  NoSuchAlgorithmException {
+        return Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
+
+
+    }
+
+
 }
