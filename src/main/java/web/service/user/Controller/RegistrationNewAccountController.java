@@ -1,5 +1,6 @@
 package web.service.user.Controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +23,6 @@ public class RegistrationNewAccountController {
     public RegistrationNewAccountController(RegistrationService registrationService, UserDetailServiceCustom userDetailServiceCustom) {
         this.registrationService = registrationService;
         this.userDetailServiceCustom = userDetailServiceCustom;
-    }
-
-    @PostMapping("/registration-email")
-    public String registerEmail(@Valid @RequestBody RegistrationRequest request){
-        if(registrationService.checkForExistingAccount(request.getEmail())){
-            return "have existing account";
-        }
-        registrationService.createNewAccount(request.getEmail(), request.getPassword());
-        return " Created new account nonactive";
     }
 
     @PostMapping("/register-information")

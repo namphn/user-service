@@ -8,4 +8,5 @@ public class PasswordResetToken extends Token {
     public PasswordResetToken(){
         super();
     }
+
 }

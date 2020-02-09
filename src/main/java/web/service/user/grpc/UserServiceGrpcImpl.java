@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import web.service.grpc.*;
 import web.service.user.service.JwtTokenProvider;
+import web.service.user.service.RegistrationService;
 import web.service.user.service.UserDetailServiceCustom;
 import web.service.user.service.UserService;
 
@@ -13,22 +14,17 @@ import web.service.user.service.UserService;
 @GRpcService
 public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailServiceCustom userDetailServiceCustom;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
     @Autowired
-    public UserServiceGrpcImpl(AuthenticationManager authenticationManager, UserDetailServiceCustom userService, JwtTokenProvider jwtTokenProvider, UserService userService1) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailServiceCustom = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService1;
+    public UserServiceGrpcImpl(UserService userService, RegistrationService registrationService) {
+        this.userService = userService;
     }
 
     @Override
-    public void createUser(CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
-        super.createUser(request, responseObserver);
+    public void registration(RegistrationRequestGrpc request, StreamObserver<RegistrationResponseGrpc> responseObserver) {
+        responseObserver.onNext(userService.registerNewAccount(request));
+        responseObserver.onCompleted();
     }
 
     @Override
@@ -39,7 +35,8 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void verificationTokenRegistration(ConfirmEmailRequest request, StreamObserver<ConfirmEmailResponse> responseObserver) {
-        super.verificationTokenRegistration(request, responseObserver);
+        responseObserver.onNext(userService.sendingTokenToVerifyEmail(request));
+        responseObserver.onCompleted();
     }
 
     @Override
