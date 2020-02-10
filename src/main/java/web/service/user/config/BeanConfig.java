@@ -17,7 +17,7 @@ public class BeanConfig {
 
     @Bean
     public SendGrid sendGridBean(){
-        return new SendGrid("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");
+        return new SendGrid("your key");
     }
 
 }
