@@ -3,6 +3,8 @@ package web.service.user.config;
 import com.sendgrid.SendGrid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +20,7 @@ import web.service.user.service.JwtAuthenticationEntryPoint;
 import web.service.user.service.JwtAuthenticationFilter;
 import web.service.user.service.UserDetailServiceCustom;
 
-
+@Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -68,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login","user/verification", "user/registrationConfirm", "/user/forgot-password").permitAll()
+                .antMatchers("/user/login","/user/verification", "/user/forgot-password", "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -80,10 +82,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
-    }
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/user/login","user/verification", "user/registrationConfirm", "/user/forgot-password");
     }
 
 }

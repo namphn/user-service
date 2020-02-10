@@ -25,9 +25,9 @@ import java.util.Map;
 @Service
 public class SendingMailService {
 
-    private web.service.user.model.MailProperties mailProperties;
+    private final web.service.user.model.MailProperties mailProperties;
     private final freemarker.template.Configuration templates;
-    private SendGrid sendGrid;
+    private final SendGrid sendGrid;
 
     @Autowired
     public SendingMailService(MailProperties mailProperties, Configuration templates, SendGrid sendGrid) {
@@ -39,6 +39,7 @@ public class SendingMailService {
     public boolean sendVerificationMail(String toEMail, String verificationCode) {
         String subject = "Please verify your email";
         String body = "";
+
         try {
             Template t = templates.getTemplate("email-verification.ftl");
             Map<String, String> map = new HashMap<>();
@@ -51,7 +52,6 @@ public class SendingMailService {
         }
 
         return sendMail(toEMail, subject, new Content("text/html", body));
-
     }
 
     public boolean sendPasswordResetMail(String toEmail, String passwordForgotToken, String url){
@@ -81,13 +81,14 @@ public class SendingMailService {
 
         request.setMethod(Method.POST);
         request.setEndpoint("mail/send");
+
         try {
             request.setBody(mail.build());
             response = this.sendGrid.api(request);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(response.getStatusCode());
+
         if(response == null) return false;
         else return true;
     }

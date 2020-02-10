@@ -1,5 +1,6 @@
 package web.service.user.Controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,8 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import web.service.user.model.User;
 import web.service.user.model.request.RegistrationInformationRequest;
 import web.service.user.model.request.RegistrationRequest;
-import web.service.user.service.RegistrationService;
+import web.service.user.model.response.Error;
+import web.service.user.model.response.RegistrationResponse;
+import web.service.user.service.GrpcClientService;
 import web.service.user.service.UserDetailServiceCustom;
+import web.service.user.service.UserService;
 
 import javax.validation.Valid;
 
@@ -17,12 +21,26 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class RegistrationNewAccountController {
 
-    private final RegistrationService registrationService;
+
+    private final GrpcClientService grpcClientService;
     private final UserDetailServiceCustom userDetailServiceCustom;
 
-    public RegistrationNewAccountController(RegistrationService registrationService, UserDetailServiceCustom userDetailServiceCustom) {
-        this.registrationService = registrationService;
+    public RegistrationNewAccountController(GrpcClientService grpcClientService,
+                                            UserDetailServiceCustom userDetailServiceCustom) {
+
+        this.grpcClientService = grpcClientService;
         this.userDetailServiceCustom = userDetailServiceCustom;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity register(@Valid @RequestBody RegistrationRequest  request){
+        RegistrationResponse response = grpcClientService.registerNewAccount(request);
+        if(response.getStatus() == "EXIST EMAIL") {
+            return new ResponseEntity(Error.HAVE_EXIST_ACCOUNT,HttpStatus.BAD_REQUEST);
+        } else if(response.getStatus() == "INVALID EMAIL"){
+            return new ResponseEntity(Error.INVALID_EMAIL,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @PostMapping("/register-information")

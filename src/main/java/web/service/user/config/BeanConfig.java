@@ -12,12 +12,12 @@ public class BeanConfig {
 
     @Bean
     ManagedChannel chanelBean(){
-        return ManagedChannelBuilder.forAddress("localhost", 6565).build();
+        return ManagedChannelBuilder.forAddress("localhost", 6566).usePlaintext().build();
     }
 
     @Bean
     public SendGrid sendGridBean(){
-        return new SendGrid("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");
+        return new SendGrid("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");
     }
 
 }

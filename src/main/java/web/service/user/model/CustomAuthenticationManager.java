@@ -15,16 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomAuthenticationManager implements AuthenticationManager {
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getPrincipal() + "";
         String password = authentication.getPrincipal() + "";
-
-        User user = userRepository.findByEmail(username);
-
         List<GranAuthorityImpl> granAuthorities = new ArrayList<>();
         granAuthorities.add(new GranAuthorityImpl("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(username, password,granAuthorities);

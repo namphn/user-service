@@ -7,8 +7,6 @@ import web.service.user.model.VerificationToken;
 import java.util.List;
 
 public interface VerificationTokenRepository extends MongoRepository<VerificationToken, Long> {
-
     VerificationToken findByToken(String token);
-
     VerificationToken findByUserEmail(String email);
 }

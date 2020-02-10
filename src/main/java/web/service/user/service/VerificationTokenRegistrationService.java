@@ -1,5 +1,6 @@
 package web.service.user.service;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
@@ -22,12 +23,13 @@ public class VerificationTokenRegistrationService {
 
     public VerificationToken createVerification(String email){
         User user = userRepository.findByEmail(email);
-        if(user == null){
-            user = new User();
-            user.setEmail(email);
-            userRepository.save(user);
+        VerificationToken verificationToken = null;
+        try{
+            verificationToken = verificationTokenRepository.findByUserEmail(email);
+        } catch (IncorrectResultSizeDataAccessException e){
+            verificationToken = null;
         }
-        VerificationToken verificationToken = verificationTokenRepository.findByUserEmail(email);
+
         if(verificationToken == null){
             verificationToken = new VerificationToken();
             verificationToken.setUser(user);

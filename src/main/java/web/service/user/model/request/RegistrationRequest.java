@@ -12,8 +12,4 @@ public class RegistrationRequest {
     @NotNull
     String password;
 
-    public RegistrationRequest(RegistrationRequestGrpc requestGrpc){
-        this.email = requestGrpc.getEmail();
-        this.password = requestGrpc.getPassword();
-    }
 }

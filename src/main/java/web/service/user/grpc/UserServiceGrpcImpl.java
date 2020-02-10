@@ -35,13 +35,13 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void verificationTokenRegistration(ConfirmEmailRequest request, StreamObserver<ConfirmEmailResponse> responseObserver) {
-        responseObserver.onNext(userService.sendingTokenToVerifyEmail(request));
-        responseObserver.onCompleted();
+
     }
 
     @Override
     public void passwordForgot(PasswordResetRequest request, StreamObserver<PasswordResetResponse> responseObserver) {
-        super.passwordForgot(request, responseObserver);
+        responseObserver.onNext(userService.sendingResetPasswordEmail(request));
+        responseObserver.onCompleted();
     }
 
     @Override

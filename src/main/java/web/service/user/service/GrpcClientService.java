@@ -2,12 +2,12 @@ package web.service.user.service;
 
 import io.grpc.ManagedChannel;
 import org.springframework.stereotype.Service;
-import web.service.grpc.ConfirmEmailRequest;
-import web.service.grpc.ConfirmEmailResponse;
-import web.service.grpc.LoginResponse;
-import web.service.grpc.UserServiceGrpc;
+import web.service.grpc.*;
 import web.service.user.model.request.LoginRequest;
+import web.service.user.model.request.PasswordForgotRequest;
 import web.service.user.model.request.RegistrationRequest;
+import web.service.user.model.response.PasswordForgotResponse;
+import web.service.user.model.response.RegistrationResponse;
 
 @Service
 public class GrpcClientService {
@@ -27,10 +27,18 @@ public class GrpcClientService {
         return response;
     }
 
-    public ConfirmEmailResponse sendingVerificationEmail(RegistrationRequest request){
+    public RegistrationResponse registerNewAccount(RegistrationRequest request){
         UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
-        ConfirmEmailRequest grpcRequest = userService.convertToConfirmEmailReqest(request);
-        return stub.verificationTokenRegistration(grpcRequest);
+        RegistrationRequestGrpc requestGrpc = userService.convertToRegistrationRequestGrpc(request);
+        RegistrationResponse response = new RegistrationResponse(stub.registration(requestGrpc));
+        return response;
+    }
+
+    public PasswordForgotResponse forgotPassword(PasswordForgotRequest request){
+        UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
+        PasswordResetRequest grpcRequest = userService.convertToPasswordResetRequest(request);
+        PasswordForgotResponse response = new PasswordForgotResponse(stub.passwordForgot(grpcRequest));
+        return response;
     }
 
 }
