@@ -25,12 +25,6 @@ public class Token {
     protected LocalDateTime issuedDateTime;
     protected LocalDateTime confirmDateTime;
 
-    protected Date calculateExpiryDate(int expiryTimeInMinutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
-    }
     public Token(){
         this.token = UUID.randomUUID().toString();
         this.issuedDateTime = LocalDateTime.now();

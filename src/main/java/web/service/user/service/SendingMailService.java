@@ -1,12 +1,6 @@
 package web.service.user.service;
 
-import com.sendgrid.Method;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -15,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import web.service.user.model.MailProperties;
-
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 ;
 
 @Data
@@ -50,8 +47,7 @@ public class SendingMailService {
         } catch (TemplateException e) {
             e.printStackTrace();
         }
-
-        return sendMail(toEMail, subject, new Content("text/html", body));
+        return sendMail(toEMail, subject, body);
     }
 
     public boolean sendPasswordResetMail(String toEmail, String passwordForgotToken, String url){
@@ -69,27 +65,38 @@ public class SendingMailService {
         } catch (TemplateException e) {
             e.printStackTrace();
         }
-        return sendMail(toEmail, subject, new Content("text/html", body));
+        return sendMail(toEmail, subject, body);
     }
 
-    private boolean sendMail(String toEmail, String subject, Content content){
+    private boolean sendMail(String toEmail, String subject, String content){
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", mailProperties.getSmtp().getHost());
+        prop.put("mail.smtp.port", mailProperties.getSmtp().getPort());
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
 
-        Mail mail = new Mail(new Email(mailProperties.getFrom()), subject, new Email(toEmail), content);
-        mail.setReplyTo(new Email("hoangnamuet.vnu@gmail.com"));
-        Request request = new Request();
-        Response response = null;
-
-        request.setMethod(Method.POST);
-        request.setEndpoint("mail/send");
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(mailProperties.getSmtp().getUsername(), mailProperties.getSmtp().getPassword());
+                    }
+                });
 
         try {
-            request.setBody(mail.build());
-            response = this.sendGrid.api(request);
-        } catch (IOException e) {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(mailProperties.getFrom()));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(toEmail)
+            );
+            message.setSubject(subject);
+            message.setContent(content, "text/html");
+            Transport.send(message);
+        } catch (MessagingException e) {
             e.printStackTrace();
+            return false;
         }
-
-        if(response == null) return false;
-        else return true;
+        return true;
     }
+
 }

@@ -8,6 +8,8 @@ import web.service.user.model.request.PasswordForgotRequest;
 import web.service.user.model.request.RegistrationRequest;
 import web.service.user.model.response.PasswordForgotResponse;
 import web.service.user.model.response.RegistrationResponse;
+import web.service.user.model.response.VerificationEmailResponse;
+import web.service.user.model.response.VerificationResetPasswordResponse;
 
 @Service
 public class GrpcClientService {
@@ -38,6 +40,23 @@ public class GrpcClientService {
         UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
         PasswordResetRequest grpcRequest = userService.convertToPasswordResetRequest(request);
         PasswordForgotResponse response = new PasswordForgotResponse(stub.passwordForgot(grpcRequest));
+        return response;
+    }
+
+    public VerificationEmailResponse verifyingEmail(String token){
+        UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
+        ConfirmEmailRequest.Builder request = ConfirmEmailRequest.newBuilder();
+        request.setToken(token);
+        ConfirmEmailResponse response = stub.verificationTokenRegistration(request.build());
+        return new VerificationEmailResponse(response);
+    }
+
+    public VerificationResetPasswordResponse verifyingResetPasswordToken(String token){
+        VerificationResetPasswordTokenRequest request
+                = userService.setVerificationPassTokenRequest(token);
+        UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
+        VerificationResetPasswordTokenResponse grpcResponse = stub.verificationResetPasswordToken(request);
+        VerificationResetPasswordResponse response = new VerificationResetPasswordResponse(grpcResponse);
         return response;
     }
 

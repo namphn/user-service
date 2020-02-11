@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
 import web.service.user.model.VerificationToken;
+import web.service.user.model.response.Status;
 import web.service.user.repository.UserRepository;
 import web.service.user.repository.VerificationTokenRepository;
 import java.time.LocalDateTime;
@@ -39,14 +40,14 @@ public class VerificationTokenRegistrationService {
         return verificationToken;
     }
 
-    public ResponseEntity<String> verifyEmail(String token){
+    public String verifyEmail(String token){
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
         if(verificationToken == null) {
-            return ResponseEntity.badRequest().body("Invalid token");
+            return Status.INVALID_TOKEN;
         }
 
         if(verificationToken.getExpiryDateTime().isBefore(LocalDateTime.now())){
-            return ResponseEntity.badRequest().body("Expired token");
+            return Status.EXPIRED_TOKEN;
         }
 
         /**
@@ -56,6 +57,14 @@ public class VerificationTokenRegistrationService {
         verificationToken.setConfirmDateTime(LocalDateTime.now());
         verificationToken.setStatus(VerificationToken.STATUS_VERIFIED);
         verificationTokenRepository.save(verificationToken);
-        return ResponseEntity.ok("You are successfully verify your email address");
+        User user = userRepository.findByEmail(verificationToken.getUser().getEmail());
+        user.setEnable(true);
+        userRepository.save(user);
+        return Status.SUCCESSFULLY_VERIFY;
+    }
+
+    public User findUserByVerificationToken(String token){
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        return verificationToken.getUser();
     }
 }

@@ -133,6 +133,22 @@
             <artifactId>grpc-client-spring-boot</artifactId>
             <version>0.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.mailjet</groupId>
+            <artifactId>mailjet-client</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.elasticemail.app/webapiclient -->
+        <dependency>
+            <groupId>com.elasticemail.app</groupId>
+            <artifactId>webapiclient</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
 
     <build>

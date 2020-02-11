@@ -3,11 +3,8 @@ package web.service.user.grpc;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import web.service.grpc.*;
-import web.service.user.service.JwtTokenProvider;
 import web.service.user.service.RegistrationService;
-import web.service.user.service.UserDetailServiceCustom;
 import web.service.user.service.UserService;
 
 
@@ -35,7 +32,8 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void verificationTokenRegistration(ConfirmEmailRequest request, StreamObserver<ConfirmEmailResponse> responseObserver) {
-
+        responseObserver.onNext(userService.verifyingEmail(request));
+        responseObserver.onCompleted();
     }
 
     @Override
@@ -47,5 +45,16 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void registrationInformation(RegistrationInformationRequest request, StreamObserver<RegistrationInformationResponse> responseObserver) {
         super.registrationInformation(request, responseObserver);
+    }
+
+    @Override
+    public void passwordReset(NewPasswordRequest request, StreamObserver<NewPasswordResponse> responseObserver) {
+        super.passwordReset(request, responseObserver);
+    }
+
+    @Override
+    public void verificationResetPasswordToken(VerificationResetPasswordTokenRequest request, StreamObserver<VerificationResetPasswordTokenResponse> responseObserver) {
+        responseObserver.onNext(userService.verifyResetPasswordToken(request));
+        responseObserver.onCompleted();
     }
 }

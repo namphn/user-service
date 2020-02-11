@@ -4,4 +4,10 @@ public class Status {
     public static final String SENT_EMAIL = "SENT_EMAIL";
     public static final String ERROR = "HAVE ERROR";
     public static final String HAVE_NOT_ACCOUNT = "HAVE NOT ACCOUNT";
+    public static final String INVALID_TOKEN = "INVALID TOKEN";
+    public static final String EXPIRED_TOKEN = "EXPIRED_TOKEN";
+    public static final String SUCCESSFULLY_VERIFY = "SUCCESSFULLY VERIFY";
+    public static final String ACCOUNT_IS_INACTIVE = "ACCOUNT IS INACTIVE";
+    public static final String EMAIL_ALREADY_EXISTS = "EMAIL ALREADY EXISTS";
+    public static final String INVALID_EMAIL = "INVALID EMAIL ADDRESS";
 }

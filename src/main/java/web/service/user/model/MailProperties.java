@@ -1,6 +1,7 @@
 package web.service.user.model;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,5 +22,6 @@ public class MailProperties {
     private String from;
     private String fromName;
     private String verificationApi;
+
 
 }

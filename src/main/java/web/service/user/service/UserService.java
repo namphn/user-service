@@ -1,6 +1,5 @@
 package web.service.user.service;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -9,15 +8,13 @@ import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
 import web.service.user.model.VerificationToken;
 import web.service.user.model.request.PasswordForgotRequest;
-import web.service.user.model.request.PasswordResetToken;
+import web.service.user.model.PasswordResetToken;
 import web.service.user.model.request.RegistrationRequest;
 import web.service.user.model.response.Status;
-import web.service.user.repository.UserRepository;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final UserDetailServiceCustom userDetailServiceCustom;
     private final JwtTokenProvider jwtTokenProvider;
@@ -26,8 +23,7 @@ public class UserService {
     private final SendingMailService sendingMailService;
     private final PasswordForgotTokenService passwordForgotTokenService;
 
-    public UserService(UserRepository userRepository,
-                       AuthenticationManager authenticationManager,
+    public UserService(AuthenticationManager authenticationManager,
                        UserDetailServiceCustom userDetailServiceCustom,
                        JwtTokenProvider jwtTokenProvider,
                        RegistrationService registrationService,
@@ -35,7 +31,6 @@ public class UserService {
                        SendingMailService sendingMailService,
                        PasswordForgotTokenService passwordForgotTokenService) {
 
-        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.userDetailServiceCustom = userDetailServiceCustom;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -81,19 +76,25 @@ public class UserService {
         return resetRequest.build();
     }
 
+    public VerificationResetPasswordTokenRequest setVerificationPassTokenRequest(String token){
+        VerificationResetPasswordTokenRequest.Builder request = VerificationResetPasswordTokenRequest.newBuilder();
+        request.setToken(token);
+        return request.build();
+    }
+
     public RegistrationResponseGrpc registerNewAccount(RegistrationRequestGrpc request){
         RegistrationResponseGrpc.Builder response = RegistrationResponseGrpc.newBuilder();
         response.setEmail(request.getEmail());
         response.setPassword(request.getPassword());
 
         if(registrationService.checkForExistingAccount(request.getEmail())){
-            response.setStatus("EXIST EMAIL");
+            response.setStatus(Status.EMAIL_ALREADY_EXISTS);
         } else {
-            registrationService.createNewAccount(request.getEmail(), request.getPassword());
             if(!sendingTokenToVerifyEmail(request.getEmail())) {
-                response.setStatus("INVALID EMAIL");
+                response.setStatus(Status.INVALID_EMAIL);
             } else {
-                response.setStatus("NON_ACTIVE");
+                registrationService.createNewAccount(request.getEmail(), request.getPassword());
+                response.setStatus(Status.SENT_EMAIL);
             }
         }
 
@@ -106,8 +107,6 @@ public class UserService {
             return false;
         }
         sendingMailService.sendVerificationMail(email,verificationToken.getToken());
-        ConfirmEmailResponse.Builder response = ConfirmEmailResponse.newBuilder();
-        response.setStatus("verifying email");
         return true;
     }
 
@@ -126,6 +125,33 @@ public class UserService {
            }
            else response.setStatus(Status.ERROR);
        }
+
+        return response.build();
+    }
+
+    public ConfirmEmailResponse verifyingEmail(ConfirmEmailRequest request){
+        ConfirmEmailResponse.Builder response = ConfirmEmailResponse.newBuilder();
+        String verifyStatus = verificationTokenRegistrationService.verifyEmail(request.getToken());
+        response.setStatus(verifyStatus);
+        response.setEmail(verificationTokenRegistrationService
+                .findUserByVerificationToken(request.getToken())
+                .getEmail());
+
+        return response.build();
+    }
+
+    public VerificationResetPasswordTokenResponse verifyResetPasswordToken(VerificationResetPasswordTokenRequest request){
+        VerificationResetPasswordTokenResponse.Builder
+                response = VerificationResetPasswordTokenResponse.newBuilder();
+        User user = passwordForgotTokenService.findUserByPasswordResetToken(request.getToken());
+        if(user == null){
+            response.setStatus(Status.HAVE_NOT_ACCOUNT);
+        } else  if (user.isEnable() == false) {
+            response.setStatus(Status.ACCOUNT_IS_INACTIVE);
+        } else {
+                response.setEmail(user.getEmail());
+                response.setStatus(Status.SUCCESSFULLY_VERIFY);
+        }
 
         return response.build();
     }

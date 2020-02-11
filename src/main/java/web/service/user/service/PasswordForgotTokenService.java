@@ -1,8 +1,7 @@
 package web.service.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import web.service.user.model.request.PasswordResetToken;
+import web.service.user.model.PasswordResetToken;
 import web.service.user.model.User;
 import web.service.user.repository.PasswordResetTokenRepository;
 import web.service.user.repository.UserRepository;
@@ -27,5 +26,9 @@ public class PasswordForgotTokenService {
         passwordResetToken.setUser(forgotPasswordUser);
         passwordResetTokenRepository.save(passwordResetToken);
         return passwordResetToken;
+    }
+    public User findUserByPasswordResetToken(String token){
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        return passwordResetToken.getUser();
     }
 }
