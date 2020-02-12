@@ -44,12 +44,14 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void registrationInformation(RegistrationInformationRequest request, StreamObserver<RegistrationInformationResponse> responseObserver) {
-        super.registrationInformation(request, responseObserver);
+        responseObserver.onNext(userService.registerInformation(request));
+        responseObserver.onCompleted();
     }
 
     @Override
     public void passwordReset(NewPasswordRequest request, StreamObserver<NewPasswordResponse> responseObserver) {
-        super.passwordReset(request, responseObserver);
+        responseObserver.onNext(userService.setNewPassword(request));
+        responseObserver.onCompleted();
     }
 
     @Override

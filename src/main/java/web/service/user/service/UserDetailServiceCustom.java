@@ -1,6 +1,5 @@
 package web.service.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +26,7 @@ public class UserDetailServiceCustom implements UserDetailsService {
     public UserDetailCustom loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(s);
         if(user == null) {
-            throw new UsernameNotFoundException(s);
+            return null;
         }
         return new UserDetailCustom(user);
     }
@@ -35,7 +34,7 @@ public class UserDetailServiceCustom implements UserDetailsService {
     public UserDetailCustom loadUserByEmail(String email){
         User user = userRepository.findByEmail(email);
         if(user == null) {
-            throw new UsernameNotFoundException(email);
+            return null;
         }
         return new UserDetailCustom(user);
     }
@@ -43,7 +42,7 @@ public class UserDetailServiceCustom implements UserDetailsService {
     public User findUserByEmail(String email){
         User user = userRepository.findByEmail(email);
         if(user == null) {
-            throw new UsernameNotFoundException(email);
+            return null;
         }
         return user;
     }

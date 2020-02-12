@@ -6,14 +6,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import web.service.user.model.User;
 import web.service.user.model.request.RegistrationInformationRequest;
 import web.service.user.model.request.RegistrationRequest;
 import web.service.user.model.response.Error;
 import web.service.user.model.response.RegistrationResponse;
 import web.service.user.service.GrpcClientService;
 import web.service.user.service.UserDetailServiceCustom;
-import web.service.user.service.UserService;
 
 import javax.validation.Valid;
 
@@ -44,11 +42,8 @@ public class RegistrationNewAccountController {
     }
 
     @PostMapping("/register-information")
-    public String registerInformationAccount(@Valid @RequestBody RegistrationInformationRequest request){
-        User user = userDetailServiceCustom.findUserByEmail(request.getEmail());
-        user.setUserName(request.getUserName());
-        user.setPhone(request.getPhone());
-        userDetailServiceCustom.saveUser(user);
-        return "saved Information";
+    public ResponseEntity registerInformationAccount(@Valid @RequestBody RegistrationInformationRequest request){
+        String response = grpcClientService.registerInformation(request);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

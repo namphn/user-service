@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import web.service.grpc.LoginResponse;
 import web.service.user.model.request.LoginRequest;
+import web.service.user.model.response.LoginResponse;
+import web.service.user.model.response.Status;
 import web.service.user.service.GrpcClientService;
 
 import javax.validation.Valid;
@@ -31,7 +32,9 @@ public class LoginController {
         } catch (StatusRuntimeException e) {
             System.out.println(e);
         }
-
-        return new ResponseEntity<>(new web.service.user.model.response.LoginResponse(response.getToken()), HttpStatus.OK);
+        if(response.getStatus().equals(Status.HAVE_NOT_ACCOUNT)){
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

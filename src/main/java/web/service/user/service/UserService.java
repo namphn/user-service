@@ -42,16 +42,24 @@ public class UserService {
 
     public LoginResponse authenticateUser(LoginRequest loginRequest){
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
-                    loginRequest.getPassword()
-            ));
-
-        final UserDetailCustom userDetails = userDetailServiceCustom.loadUserByEmail(loginRequest.getEmail());
-        final String token = jwtTokenProvider.generateToken(userDetails);
         LoginResponse.Builder response = LoginResponse.newBuilder();
-        response.setStatus("jwt have created");
-        response.setToken(token);
+        final UserDetailCustom userDetails = userDetailServiceCustom.loadUserByEmail(loginRequest.getEmail());
+        if(userDetails == null){
+            response.setStatus(Status.HAVE_NOT_ACCOUNT);
+        } else {
+            if(userDetails.getUser().isEnable()){
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                ));
+
+                final String token = jwtTokenProvider.generateToken(userDetails);
+                response.setStatus(Status.ACCEPT);
+                response.setToken(token);
+            } else
+                response.setStatus(Status.ACCOUNT_IS_INACTIVE);
+        }
+
         return response.build();
     }
 
@@ -76,6 +84,24 @@ public class UserService {
         return resetRequest.build();
     }
 
+    public NewPasswordRequest convertToNewPasswordRequestGrpc(web.service.user.model.request.NewPasswordRequest request,
+                                                              String token){
+        NewPasswordRequest.Builder grpcRequest = NewPasswordRequest.newBuilder();
+        grpcRequest.setNewPassword(request.getNewPassword());
+        grpcRequest.setNewPasswordConfirm(request.getNewPasswordConfirm());
+        grpcRequest.setToken(token);
+        return grpcRequest.build();
+    }
+
+    public RegistrationInformationRequest convertToRegistrationInformationRequestGrpc(
+            web.service.user.model.request.RegistrationInformationRequest request){
+        RegistrationInformationRequest.Builder grpcRequest = RegistrationInformationRequest.newBuilder();
+        grpcRequest.setEmail(request.getEmail());
+        grpcRequest.setPhone(request.getPhone());
+        grpcRequest.setUserName(request.getUserName());
+        return grpcRequest.build();
+    }
+
     public VerificationResetPasswordTokenRequest setVerificationPassTokenRequest(String token){
         VerificationResetPasswordTokenRequest.Builder request = VerificationResetPasswordTokenRequest.newBuilder();
         request.setToken(token);
@@ -90,10 +116,10 @@ public class UserService {
         if(registrationService.checkForExistingAccount(request.getEmail())){
             response.setStatus(Status.EMAIL_ALREADY_EXISTS);
         } else {
+            registrationService.createNewAccount(request.getEmail(), request.getPassword());
             if(!sendingTokenToVerifyEmail(request.getEmail())) {
                 response.setStatus(Status.INVALID_EMAIL);
             } else {
-                registrationService.createNewAccount(request.getEmail(), request.getPassword());
                 response.setStatus(Status.SENT_EMAIL);
             }
         }
@@ -119,7 +145,7 @@ public class UserService {
        if(passwordResetToken == null){
            response.setStatus(Status.HAVE_NOT_ACCOUNT);
        } else {
-           String url = "localhost/user";
+           String url = "localhost:8082/user";
            if(sendingMailService.sendPasswordResetMail(request.getEmail(),passwordResetToken.getToken(), url)){
                response.setStatus(Status.SENT_EMAIL);
            }
@@ -153,6 +179,37 @@ public class UserService {
                 response.setStatus(Status.SUCCESSFULLY_VERIFY);
         }
 
+        return response.build();
+    }
+
+    public NewPasswordResponse setNewPassword(NewPasswordRequest request){
+        NewPasswordResponse.Builder response = NewPasswordResponse.newBuilder();
+        User user = passwordForgotTokenService.findUserByPasswordResetToken(request.getToken());
+        if(user == null) response.setStatus(Status.HAVE_NOT_ACCOUNT);
+        else {
+            if(request.getNewPassword().equals(request.getNewPasswordConfirm()) == false){
+                response.setStatus(Status.INVALID_CONFIRM_PASSWORD);
+            } else {
+                saveNewPassword(user.getEmail(), request.getNewPassword());
+                response.setEmail(user.getEmail());
+                response.setStatus(Status.SAVED_NEW_PASSWORD);
+            }
+        }
+
+        return response.build();
+    }
+
+    public void saveNewPassword(String email, String newPassword){
+        User user = userDetailServiceCustom.findUserByEmail(email);
+        user.setPassword(newPassword);
+        userDetailServiceCustom.saveUser(user);
+    }
+
+    public RegistrationInformationResponse registerInformation(RegistrationInformationRequest request){
+        User user = userDetailServiceCustom.findUserByEmail(request.getEmail());
+        registrationService.saveInformation(user.getEmail(), request.getUserName(), request.getPhone());
+        RegistrationInformationResponse.Builder response = RegistrationInformationResponse.newBuilder();
+        response.setStatus(Status.SAVED_INFORMATION);
         return response.build();
     }
 }

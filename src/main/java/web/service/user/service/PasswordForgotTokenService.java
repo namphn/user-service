@@ -29,6 +29,8 @@ public class PasswordForgotTokenService {
     }
     public User findUserByPasswordResetToken(String token){
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
-        return passwordResetToken.getUser();
+        if(passwordResetToken == null) return null;
+        else
+            return passwordResetToken.getUser();
     }
 }

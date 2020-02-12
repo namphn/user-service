@@ -22,11 +22,11 @@ public class GrpcClientService {
         this.userService = userService;
     }
 
-    public LoginResponse login(LoginRequest loginRequest){
+    public web.service.user.model.response.LoginResponse login(LoginRequest loginRequest){
         UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
         web.service.grpc.LoginRequest loginRequestGrpc = userService.convertToLoginRequestGprc(loginRequest);
         LoginResponse response = stub.login(loginRequestGrpc);
-        return response;
+        return new web.service.user.model.response.LoginResponse(response);
     }
 
     public RegistrationResponse registerNewAccount(RegistrationRequest request){
@@ -60,4 +60,21 @@ public class GrpcClientService {
         return response;
     }
 
+    public web.service.user.model.response.NewPasswordResponse setNewPassword(
+            web.service.user.model.request.NewPasswordRequest request,
+            String token){
+        UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
+        NewPasswordRequest grpcRequest = userService.convertToNewPasswordRequestGrpc(request,token);
+        NewPasswordResponse grpcresponse = stub.passwordReset(grpcRequest);
+        web.service.user.model.response.NewPasswordResponse response =
+                new web.service.user.model.response.NewPasswordResponse(grpcresponse);
+        return response;
+    }
+
+    public String registerInformation(web.service.user.model.request.RegistrationInformationRequest request){
+        RegistrationInformationRequest grpcRequest = userService.convertToRegistrationInformationRequestGrpc(request);
+        UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
+        RegistrationInformationResponse grpcResponse = stub.registrationInformation(grpcRequest);
+        return grpcResponse.getStatus();
+    }
 }

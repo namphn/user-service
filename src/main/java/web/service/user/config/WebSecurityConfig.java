@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/login","/user/verification",
                         "/user/forgot-password", "/user/register",
-                        "/user/verifying-email").permitAll()
+                        "/user/verifying-email", "/user/verifying-reset-password").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

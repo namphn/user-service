@@ -10,4 +10,8 @@ public class Status {
     public static final String ACCOUNT_IS_INACTIVE = "ACCOUNT IS INACTIVE";
     public static final String EMAIL_ALREADY_EXISTS = "EMAIL ALREADY EXISTS";
     public static final String INVALID_EMAIL = "INVALID EMAIL ADDRESS";
+    public static final String INVALID_CONFIRM_PASSWORD = "INVALID CONFIRM PASSWORD";
+    public static final String SAVED_NEW_PASSWORD = "SAVED_NEW_PASSWORD";
+    public static final String ACCEPT = "ACCEPT";
+    public static final String SAVED_INFORMATION = "SAVED INFORMATION";
 }

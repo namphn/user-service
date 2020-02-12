@@ -1,6 +1,9 @@
 package web.service.user.Controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import web.service.user.model.response.Status;
 import web.service.user.model.response.VerificationEmailResponse;
 import web.service.user.model.response.VerificationResetPasswordResponse;
 import web.service.user.service.*;
@@ -25,8 +28,12 @@ public class VerificationController {
 
     @GetMapping("/verifying-email")
     @ResponseBody
-    public VerificationEmailResponse verifyEmail(@RequestParam("token") String token) {
-        return grpcClientService.verifyingEmail(token);
+    public ResponseEntity verifyEmail(@RequestParam("token") String token) {
+        VerificationEmailResponse response = grpcClientService.verifyingEmail(token);
+        if(response.getStatus().equals(Status.SUCCESSFULLY_VERIFY)){
+            return new ResponseEntity(response, HttpStatus.OK);
+        }
+        return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/verifying-reset-password")

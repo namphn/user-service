@@ -11,4 +11,10 @@ import java.io.Serializable;
 @Data
 public class LoginResponse implements Serializable {
     private String token;
+    private String status;
+
+    public LoginResponse(web.service.grpc.LoginResponse response){
+        this.token = response.getToken();
+        this.status = response.getStatus();
+    }
 }

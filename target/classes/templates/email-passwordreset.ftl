@@ -91,6 +91,9 @@
         a {
             color: #1a82e2;
         }
+        #button:hover{
+            cursor: pointer;
+        }
 
         img {
             height: auto;
@@ -155,30 +158,33 @@
                 <!-- end copy -->
 
                 <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px;">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                                <a href="${PASSWORD_RESET_URL}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Do Something Sweet</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+                <div id="button">
+                    <tr>
+                        <td align="left" bgcolor="#ffffff">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" bgcolor="#ffffff" style="padding: 12px;">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
+                                                    <a href="${PASSWORD_RESET_URL}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Reset Password</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </div>
+
                 <!-- end button -->
 
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                         <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                        <p style="margin: 0;"><a href="https://sendgrid.com" target="_blank">https://same-link-as-button.url/xxx-xxx-xxxx</a></p>
+                        <p style="margin: 0;"><a href="${PASSWORD_RESET_URL}" target="_blank">${PASSWORD_RESET_URL}</a></p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -243,15 +249,3 @@
 
 </body>
 </html>
-© 2020 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About

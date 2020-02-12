@@ -1,6 +1,5 @@
 package web.service.user.service;
 
-import com.sendgrid.SendGrid;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -24,13 +23,11 @@ public class SendingMailService {
 
     private final web.service.user.model.MailProperties mailProperties;
     private final freemarker.template.Configuration templates;
-    private final SendGrid sendGrid;
 
     @Autowired
-    public SendingMailService(MailProperties mailProperties, Configuration templates, SendGrid sendGrid) {
+    public SendingMailService(MailProperties mailProperties, Configuration templates) {
         this.mailProperties = mailProperties;
         this.templates = templates;
-        this.sendGrid = sendGrid;
     }
 
     public boolean sendVerificationMail(String toEMail, String verificationCode) {
@@ -58,7 +55,7 @@ public class SendingMailService {
             Template resetPasswordTemplate = templates.getTemplate("email-passwordreset.ftl");
             Map<String, String> map = new HashMap<>();
             map.put("TO_EMAIL", toEmail);
-            map.put("PASSWORD_RESET_URL", url + "/reset-password?token=" + passwordForgotToken);
+            map.put("PASSWORD_RESET_URL", url + "/verifying-reset-password?token=" + passwordForgotToken);
             body = FreeMarkerTemplateUtils.processTemplateIntoString(resetPasswordTemplate, map);
         } catch (IOException e) {
             e.printStackTrace();
