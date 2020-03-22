@@ -1,11 +1,10 @@
 package web.service.user.service;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
 import web.service.user.model.VerificationToken;
-import web.service.user.model.response.Status;
+import web.service.user.model.Status;
 import web.service.user.repository.UserRepository;
 import web.service.user.repository.VerificationTokenRepository;
 import java.time.LocalDateTime;

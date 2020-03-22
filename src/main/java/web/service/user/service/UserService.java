@@ -3,20 +3,21 @@ package web.service.user.service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import web.service.grpc.*;
+import web.service.grpc.user.*;
 import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
 import web.service.user.model.VerificationToken;
-import web.service.user.model.request.PasswordForgotRequest;
 import web.service.user.model.PasswordResetToken;
-import web.service.user.model.request.RegistrationRequest;
-import web.service.user.model.response.Status;
+import web.service.user.model.Status;
+import web.service.user.repository.UserRepository;
+
+import java.security.NoSuchAlgorithmException;
 
 @Service
 public class UserService {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailServiceCustom userDetailServiceCustom;
+    private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RegistrationService registrationService;
     private final VerificationTokenRegistrationService verificationTokenRegistrationService;
@@ -24,7 +25,7 @@ public class UserService {
     private final PasswordForgotTokenService passwordForgotTokenService;
 
     public UserService(AuthenticationManager authenticationManager,
-                       UserDetailServiceCustom userDetailServiceCustom,
+                       UserRepository userRepository,
                        JwtTokenProvider jwtTokenProvider,
                        RegistrationService registrationService,
                        VerificationTokenRegistrationService verificationTokenRegistrationService,
@@ -32,7 +33,7 @@ public class UserService {
                        PasswordForgotTokenService passwordForgotTokenService) {
 
         this.authenticationManager = authenticationManager;
-        this.userDetailServiceCustom = userDetailServiceCustom;
+        this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.registrationService = registrationService;
         this.verificationTokenRegistrationService = verificationTokenRegistrationService;
@@ -43,7 +44,7 @@ public class UserService {
     public LoginResponse authenticateUser(LoginRequest loginRequest){
 
         LoginResponse.Builder response = LoginResponse.newBuilder();
-        final UserDetailCustom userDetails = userDetailServiceCustom.loadUserByEmail(loginRequest.getEmail());
+        final UserDetailCustom userDetails = loadUserByEmail(loginRequest.getEmail());
         if(userDetails == null){
             response.setStatus(Status.HAVE_NOT_ACCOUNT);
         } else {
@@ -61,51 +62,6 @@ public class UserService {
         }
 
         return response.build();
-    }
-
-    public LoginRequest convertToLoginRequestGprc(web.service.user.model.request.LoginRequest request){
-        LoginRequest.Builder grpcRequest = LoginRequest.newBuilder();
-        grpcRequest.setEmail(request.getEmail());
-        grpcRequest.setPassword(request.getPassword());
-        return grpcRequest.build();
-    }
-
-
-    public RegistrationRequestGrpc convertToRegistrationRequestGrpc(RegistrationRequest request){
-        RegistrationRequestGrpc.Builder grpcRequest = RegistrationRequestGrpc.newBuilder();
-        grpcRequest.setEmail(request.getEmail());
-        grpcRequest.setPassword(request.getPassword());
-        return grpcRequest.build();
-    }
-
-    public PasswordResetRequest convertToPasswordResetRequest(PasswordForgotRequest request){
-        PasswordResetRequest.Builder resetRequest = PasswordResetRequest.newBuilder();
-        resetRequest.setEmail(request.getEmail());
-        return resetRequest.build();
-    }
-
-    public NewPasswordRequest convertToNewPasswordRequestGrpc(web.service.user.model.request.NewPasswordRequest request,
-                                                              String token){
-        NewPasswordRequest.Builder grpcRequest = NewPasswordRequest.newBuilder();
-        grpcRequest.setNewPassword(request.getNewPassword());
-        grpcRequest.setNewPasswordConfirm(request.getNewPasswordConfirm());
-        grpcRequest.setToken(token);
-        return grpcRequest.build();
-    }
-
-    public RegistrationInformationRequest convertToRegistrationInformationRequestGrpc(
-            web.service.user.model.request.RegistrationInformationRequest request){
-        RegistrationInformationRequest.Builder grpcRequest = RegistrationInformationRequest.newBuilder();
-        grpcRequest.setEmail(request.getEmail());
-        grpcRequest.setPhone(request.getPhone());
-        grpcRequest.setUserName(request.getUserName());
-        return grpcRequest.build();
-    }
-
-    public VerificationResetPasswordTokenRequest setVerificationPassTokenRequest(String token){
-        VerificationResetPasswordTokenRequest.Builder request = VerificationResetPasswordTokenRequest.newBuilder();
-        request.setToken(token);
-        return request.build();
     }
 
     public RegistrationResponseGrpc registerNewAccount(RegistrationRequestGrpc request){
@@ -200,16 +156,59 @@ public class UserService {
     }
 
     public void saveNewPassword(String email, String newPassword){
-        User user = userDetailServiceCustom.findUserByEmail(email);
+        User user = findUserByEmail(email);
         user.setPassword(newPassword);
-        userDetailServiceCustom.saveUser(user);
+        saveUser(user);
     }
 
     public RegistrationInformationResponse registerInformation(RegistrationInformationRequest request){
-        User user = userDetailServiceCustom.findUserByEmail(request.getEmail());
+        User user = findUserByEmail(request.getEmail());
         registrationService.saveInformation(user.getEmail(), request.getUserName(), request.getPhone());
         RegistrationInformationResponse.Builder response = RegistrationInformationResponse.newBuilder();
         response.setStatus(Status.SAVED_INFORMATION);
         return response.build();
+    }
+
+    public GetEmailResponse getEmailFromToken(GetEmailRequest request){
+        String email = null;
+        GetEmailResponse.Builder response = GetEmailResponse.newBuilder();
+        try {
+            email = jwtTokenProvider.getEmailFromToken(request.getToken());
+            response.setEmail(email);
+        } catch (NoSuchAlgorithmException e) {
+            response.setEmail(null);
+        }
+        return response.build();
+    }
+
+    public ValidateTokenResponse validateToken(ValidateTokenRequest request){
+        ValidateTokenResponse.Builder response = ValidateTokenResponse.newBuilder();
+        try {
+            if(jwtTokenProvider.validateToken(request.getToken(), request.getEmail())){
+                response.setStatus(true);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            response.setStatus(false);
+        }
+        return response.build();
+    }
+
+    public UserDetailCustom loadUserByEmail(String email){
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            return null;
+        }
+        return new UserDetailCustom(user);
+    }
+
+    public User findUserByEmail(String email){
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            return null;
+        }
+        return user;
+    }
+    public void saveUser(User user){
+        userRepository.save(user);
     }
 }

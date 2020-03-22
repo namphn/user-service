@@ -17,8 +17,6 @@ import java.util.function.Function;
 @NoArgsConstructor
 public class JwtTokenProvider {
 
-    private final long serialVersionUID = -2550185165626007488L;
-
     private final String JWT_SECRET = "lBkt8u0eBIKr0";
 
     private final long JWT_EXPIRATION = 60480000L;
@@ -66,11 +64,9 @@ public class JwtTokenProvider {
 
 
 
-    public Boolean validateToken(String token, UserDetails userDetails) throws NoSuchAlgorithmException {
-        System.out.println(userDetails.getUsername());
+    public Boolean validateToken(String token, String email) throws NoSuchAlgorithmException {
         final String username = getEmailFromToken(token);
-
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(email) && !isTokenExpired(token));
 
     }
     private Claims getAllClaimsFromToken(String token) throws  NoSuchAlgorithmException {
