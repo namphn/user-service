@@ -19,7 +19,7 @@ public class JwtTokenProvider {
 
     private final String JWT_SECRET = "lBkt8u0eBIKr0";
 
-    private final long JWT_EXPIRATION = 60480000L;
+    private final long JWT_EXPIRATION = 60480000000L;
 
     /** tạo chuỗi token */
     public String generateToken(UserDetailCustom userDetailCustom){

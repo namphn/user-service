@@ -1,4 +1,14 @@
 server:
   port: 8082
 grpc:
-  port: 6567
+  port: 6568
+mail:
+  from: phamhoangnamuet.vnu@gmail.com
+  from-name: hoangnam
+  smtp:
+    username: phamhoangnamuet.vnu@gmail.com
+    host: smtp.gmail.com
+    password: hoangnampltn
+    port: 25
+  verification-api: http://localhost:8084/user/verifying-email?token=
+

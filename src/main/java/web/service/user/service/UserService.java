@@ -67,12 +67,25 @@ public class UserService {
     public RegistrationResponseGrpc registerNewAccount(RegistrationRequestGrpc request){
         RegistrationResponseGrpc.Builder response = RegistrationResponseGrpc.newBuilder();
         response.setEmail(request.getEmail());
-        response.setPassword(request.getPassword());
 
         if(registrationService.checkForExistingAccount(request.getEmail())){
             response.setStatus(Status.EMAIL_ALREADY_EXISTS);
         } else {
-            registrationService.createNewAccount(request.getEmail(), request.getPassword());
+            User user = userRepository.findByEmail(request.getEmail());
+            if(user != null ) {
+                registrationService.createNewVerifyToken(request.getEmail(),
+                                                         request.getPassword(),
+                                                         request.getFirstName(),
+                                                         request.getLastName(),
+                                                         request.getSex());
+            }  else {
+                registrationService.createNewAccount(request.getEmail(),
+                        request.getPassword(),
+                        request.getFirstName(),
+                        request.getLastName(),
+                        request.getSex());
+            }
+
             if(!sendingTokenToVerifyEmail(request.getEmail())) {
                 response.setStatus(Status.INVALID_EMAIL);
             } else {
@@ -101,7 +114,7 @@ public class UserService {
        if(passwordResetToken == null){
            response.setStatus(Status.HAVE_NOT_ACCOUNT);
        } else {
-           String url = "localhost:8082/user";
+           String url = "localhost:8084/user";
            if(sendingMailService.sendPasswordResetMail(request.getEmail(),passwordResetToken.getToken(), url)){
                response.setStatus(Status.SENT_EMAIL);
            }
@@ -163,7 +176,7 @@ public class UserService {
 
     public RegistrationInformationResponse registerInformation(RegistrationInformationRequest request){
         User user = findUserByEmail(request.getEmail());
-        registrationService.saveInformation(user.getEmail(), request.getUserName(), request.getPhone());
+        registrationService.saveInformation(user.getEmail(), request.getPhone());
         RegistrationInformationResponse.Builder response = RegistrationInformationResponse.newBuilder();
         response.setStatus(Status.SAVED_INFORMATION);
         return response.build();

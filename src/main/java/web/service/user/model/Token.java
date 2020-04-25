@@ -14,13 +14,11 @@ public class Token {
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_VERIFIED = "VERIFIED";
 
-    protected static final int EXPIRATION = 60 * 24;
-
     @Id
     protected String id;
     protected String token;
     protected String status;
-    protected User user;
+    protected String userId;
     protected LocalDateTime expiryDateTime;
     protected LocalDateTime issuedDateTime;
     protected LocalDateTime confirmDateTime;

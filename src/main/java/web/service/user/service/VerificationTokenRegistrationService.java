@@ -8,6 +8,7 @@ import web.service.user.model.Status;
 import web.service.user.repository.UserRepository;
 import web.service.user.repository.VerificationTokenRepository;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -23,20 +24,14 @@ public class VerificationTokenRegistrationService {
 
     public VerificationToken createVerification(String email){
         User user = userRepository.findByEmail(email);
-        VerificationToken verificationToken = null;
-        try{
-            verificationToken = verificationTokenRepository.findByUserEmail(email);
-        } catch (IncorrectResultSizeDataAccessException e){
-            verificationToken = null;
-        }
 
-        if(verificationToken == null){
-            verificationToken = new VerificationToken();
-            verificationToken.setUser(user);
+        if(!user.isEnable()){
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setUserId(user.getId());
             verificationTokenRepository.save(verificationToken);
+            return verificationToken;
         }
-
-        return verificationToken;
+        return null;
     }
 
     public String verifyEmail(String token){
@@ -49,21 +44,30 @@ public class VerificationTokenRegistrationService {
             return Status.EXPIRED_TOKEN;
         }
 
-        /**
-         * có nên lưu lại token đã confirm ?
-         */
 
         verificationToken.setConfirmDateTime(LocalDateTime.now());
         verificationToken.setStatus(VerificationToken.STATUS_VERIFIED);
         verificationTokenRepository.save(verificationToken);
-        User user = userRepository.findByEmail(verificationToken.getUser().getEmail());
-        user.setEnable(true);
-        userRepository.save(user);
-        return Status.SUCCESSFULLY_VERIFY;
+        Optional<User> optionalUser = userRepository.findById(verificationToken.getUserId());
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setEnable(true);
+            userRepository.save(user);
+            return Status.SUCCESSFULLY_VERIFY;
+        }
+        return Status.INVALID_TOKEN;
     }
 
     public User findUserByVerificationToken(String token){
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
-        return verificationToken.getUser();
+        VerificationToken verificationToken = null;
+        try {
+            verificationToken = verificationTokenRepository.findByToken(token);
+            Optional<User> optionalUser = userRepository.findById(verificationToken.getUserId());
+            if(optionalUser.isPresent()) {
+                return optionalUser.get();
+            } else return null;
+        } catch (Exception exception) {
+            return null;
+        }
     }
 }
