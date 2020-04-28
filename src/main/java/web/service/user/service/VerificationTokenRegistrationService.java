@@ -1,6 +1,5 @@
 package web.service.user.service;
-
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
+ 
 import org.springframework.stereotype.Service;
 import web.service.user.model.User;
 import web.service.user.model.VerificationToken;
