@@ -1,5 +1,12 @@
 package web.service.user.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -12,9 +19,12 @@ import web.service.user.model.Status;
 import web.service.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 public class UserService {
+
+    private static int MAX_PAGABLE_USER = 50;
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -45,9 +55,16 @@ public class UserService {
 
         LoginResponse.Builder response = LoginResponse.newBuilder();
         final UserDetailCustom userDetails = loadUserByEmail(loginRequest.getEmail());
-        if(userDetails == null){
+        
+        if(userDetails == null
+                || !loginRequest.getPassword().equals(userDetails.getPassword())){
+
             response.setStatus(Status.HAVE_NOT_ACCOUNT);
+
         } else {
+
+            String username = userDetails.getUsername();
+
             if(userDetails.getUser().isEnable()){
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -56,7 +73,10 @@ public class UserService {
 
                 final String token = jwtTokenProvider.generateToken(userDetails);
                 response.setStatus(Status.ACCEPT);
+
+                response.setUsername(username);
                 response.setToken(token);
+                response.setUserId(userDetails.getUser().getId());
             } else
                 response.setStatus(Status.ACCOUNT_IS_INACTIVE);
         }
@@ -223,5 +243,25 @@ public class UserService {
     }
     public void saveUser(User user){
         userRepository.save(user);
+    }
+
+    public  GetAllUserResponse getAllUser(GetAllUserRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(),this.MAX_PAGABLE_USER);
+        Page<User> allUser =  userRepository.getAllByEnableTrue(pageable);
+
+        web.service.user.model.Response.GetAllUserResponse getUser
+                = new web.service.user.model.Response.GetAllUserResponse(allUser.getContent());
+
+        ObjectMapper mapper = new ObjectMapper();
+        GetAllUserResponse.Builder response = GetAllUserResponse.newBuilder();
+        try {
+            String json = mapper.writeValueAsString(getUser);
+
+            JsonFormat.parser().ignoringUnknownFields().merge(json, response);
+
+        } catch (JsonProcessingException | InvalidProtocolBufferException e) {
+            return response.build();
+        }
+        return response.build();
     }
 }

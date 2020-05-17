@@ -1,14 +1,10 @@
 package web.service.user.model;
 
-import com.sun.mail.imap.Rights;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import web.service.user.repository.UserRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 

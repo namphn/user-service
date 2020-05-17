@@ -35,7 +35,4 @@ public class User {
         this.lastName = lastName;
         this.sex = sex;
     }
-
-
-
 }

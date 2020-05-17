@@ -10,5 +10,5 @@ mail:
     host: smtp.gmail.com
     password: hoangnampltn
     port: 25
-  verification-api: http://localhost:8084/user/verifying-email?token=
+  verification-api: http://localhost:8080/verifying-email?token=
 

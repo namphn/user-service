@@ -24,26 +24,6 @@
       "sourceType": "web.service.user.model.MailProperties"
     },
     {
-      "name": "mail.smtp.host",
-      "type": "java.lang.String",
-      "sourceType": "web.service.user.model.MailProperties$SMTP"
-    },
-    {
-      "name": "mail.smtp.password",
-      "type": "java.lang.String",
-      "sourceType": "web.service.user.model.MailProperties$SMTP"
-    },
-    {
-      "name": "mail.smtp.port",
-      "type": "java.lang.String",
-      "sourceType": "web.service.user.model.MailProperties$SMTP"
-    },
-    {
-      "name": "mail.smtp.username",
-      "type": "java.lang.String",
-      "sourceType": "web.service.user.model.MailProperties$SMTP"
-    },
-    {
       "name": "mail.verification-api",
       "type": "java.lang.String",
       "sourceType": "web.service.user.model.MailProperties"
