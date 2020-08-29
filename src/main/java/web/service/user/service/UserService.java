@@ -10,16 +10,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import web.service.grpc.user.*;
+import web.service.user.grpc.*;
 import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
 import web.service.user.model.VerificationToken;
 import web.service.user.model.PasswordResetToken;
 import web.service.user.model.Status;
 import web.service.user.repository.UserRepository;
-
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
+
 
 @Service
 public class UserService {

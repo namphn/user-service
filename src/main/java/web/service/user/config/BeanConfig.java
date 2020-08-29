@@ -19,4 +19,9 @@ public class BeanConfig {
         return new CustomAuthenticationManager();
     }
 
+    @Bean
+    public freemarker.template.Configuration getTemplates() {
+        return new freemarker.template.Configuration();
+    }
+
 }

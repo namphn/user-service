@@ -12,3 +12,6 @@ mail:
     port: 25
   verification-api: http://localhost:8080/verifying-email?token=
 
+mongo:
+  remoteUri: "mongodb+srv://web-server:server123@cluster0.tmzfq.mongodb.net/user-service?retryWrites=true&w=majority"
+

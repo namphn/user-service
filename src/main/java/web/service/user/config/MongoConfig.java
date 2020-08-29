@@ -1,6 +1,8 @@
 package web.service.user.config;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
@@ -11,9 +13,13 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories
 public class MongoConfig extends AbstractMongoConfiguration {
 
+    @Value( "${mongo.remoteUri}")
+    private String mongoURi;
+
     @Override
     public MongoClient mongoClient() {
-        return new MongoClient("127.0.0.1", 27017);
+        MongoClientURI uri = new MongoClientURI(mongoURi);
+        return new MongoClient(uri);
     }
 
     @Override
