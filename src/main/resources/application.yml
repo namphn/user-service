@@ -1,7 +1,7 @@
 server:
   port: 8082
 grpc:
-  port: 6568
+  port: 6569
 mail:
   from: phamhoangnamuet.vnu@gmail.com
   from-name: hoangnam
