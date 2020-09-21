@@ -3,7 +3,7 @@ package web.service.user.grpc;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.beans.factory.annotation.Autowired;
-import web.service.grpc.user.*;
+import web.service.user.grpc.*;
 import web.service.user.service.RegistrationService;
 import web.service.user.service.UserService;
 

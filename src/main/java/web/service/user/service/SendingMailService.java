@@ -28,6 +28,7 @@ public class SendingMailService {
     public SendingMailService(MailProperties mailProperties, Configuration templates) {
         this.mailProperties = mailProperties;
         this.templates = templates;
+        templates.setClassForTemplateLoading(this.getClass(), "/templates/");
     }
 
     public boolean sendVerificationMail(String toEMail, String verificationCode) {

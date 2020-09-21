@@ -21,22 +21,20 @@ public class RegistrationService {
         else return false;
     }
 
-    public void createNewAccount(String email, String password, String firstName, String lastName, boolean sex){
-        User user = new User(email, password, firstName, lastName, sex);
+    public void createNewAccount(String email, String password, String name){
+        User user = new User(email, password, name);
         user.setEnable(false);
         userRepository.save(user);
     }
     public void saveInformation(String email, String phone){
         User user = userRepository.findByEmail(email);
-        user.setPhone(phone);
         userRepository.save(user);
     }
 
-    public void createNewVerifyToken(String email, String password, String firstName, String lastName, boolean sex) {
+    public void createNewVerifyToken(String email, String password, String name) {
         User user = userRepository.findByEmail(email);
         user.setPassword(password);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        user.setName(name);
 
     }
 }

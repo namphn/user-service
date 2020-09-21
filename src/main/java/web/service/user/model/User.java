@@ -20,19 +20,14 @@ public class User {
     private String id;
     private String password;
     private String email;
-    private String firstName;
-    private String lastName;
-    private boolean sex;
-    private String phone;
+    private String name;
 
     @Getter @Setter
     private boolean enable;
 
-    public User(String email, String password, String firstName, String lastName, boolean sex){
+    public User(String email, String password, String name){
         this.password = password;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.sex = sex;
+        this.name = name;
     }
 }

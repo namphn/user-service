@@ -23,5 +23,4 @@ public class MailProperties {
     private String fromName;
     private String verificationApi;
 
-
 }

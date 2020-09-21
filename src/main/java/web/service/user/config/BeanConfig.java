@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import web.service.user.model.CustomAuthenticationManager;
+import web.service.user.model.MailProperties;
 
 
 @Configuration
@@ -19,4 +20,8 @@ public class BeanConfig {
         return new CustomAuthenticationManager();
     }
 
+    @Bean
+    public freemarker.template.Configuration getTemplate() {
+        return new freemarker.template.Configuration();
+    }
 }

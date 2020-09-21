@@ -1,0 +1,133 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_generic_services = true;
+option java_package = "web.service.user.grpc";
+
+message RegistrationRequestGrpc{
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+message RegistrationResponseGrpc{
+  string email = 1;
+  string status = 2;
+}
+message ConfirmEmailRequest{
+  string token = 1;
+}
+message ConfirmEmailResponse{
+  string status = 1;
+  string email = 2;
+}
+message PasswordResetRequest{
+  string email = 1;
+}
+message PasswordResetResponse{
+  string status = 1;
+  string email = 2;
+}
+message RegistrationInformationRequest{
+  string email = 1;
+  string userName = 2;
+  string phone = 3;
+}
+message RegistrationInformationResponse{
+  string status = 1;
+}
+message LoginRequest{
+  string email = 1;
+  string password = 2;
+}
+message LoginResponse{
+  string status = 1;
+  string token = 2;
+  string username = 3;
+  string userId = 4;
+}
+
+message NewPasswordRequest{
+  string token = 1;
+  string newPassword = 2;
+  string newPasswordConfirm = 3;
+}
+
+message NewPasswordResponse{
+  string email = 1;
+  string status = 2;
+}
+
+message VerificationResetPasswordTokenRequest{
+  string token = 1;
+}
+message VerificationResetPasswordTokenResponse{
+  string email = 1;
+  string status = 2;
+}
+
+message GetEmailRequest {
+  string token = 1;
+}
+
+message GetEmailResponse {
+  string email = 1;
+}
+
+message ValidateTokenRequest {
+  string email = 1;
+  string token = 2;
+}
+
+message ValidateTokenResponse {
+  bool status = 1;
+}
+
+message GetAllUserRequest {
+  int32 page = 1;
+}
+
+message GetAllUserResponse {
+  message UserGrpcModel {
+    string id =1;
+    string firstName = 2;
+    string lastName = 3;
+  }
+
+  repeated UserGrpcModel allUser = 1;
+}
+
+service UserService{
+
+  // create a new account, save new email, password and send verification email
+  rpc Registration (RegistrationRequestGrpc) returns (RegistrationResponseGrpc);
+
+  // login account
+  rpc Login (LoginRequest) returns (LoginResponse);
+
+  // Verify email
+  rpc VerificationTokenRegistration (ConfirmEmailRequest) returns (ConfirmEmailResponse);
+
+  // send reset password email
+  rpc PasswordForgot(PasswordResetRequest) returns (PasswordResetResponse);
+
+  // save new password
+  rpc PasswordReset (NewPasswordRequest) returns (NewPasswordResponse);
+
+  // register account's information
+  rpc RegistrationInformation (RegistrationInformationRequest) returns (RegistrationInformationResponse);
+
+  // verify reset password token
+  rpc VerificationResetPasswordToken (VerificationResetPasswordTokenRequest)
+      returns (VerificationResetPasswordTokenResponse);
+
+  // Grpc Api cotroller
+
+  // filter controller call to user service
+  rpc GetEmailFromToken (GetEmailRequest) returns (GetEmailResponse);
+
+  //validate toke
+  rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
+
+  // get all user
+  rpc GetAllUser (GetAllUserRequest) returns (GetAllUserResponse);
+}
+

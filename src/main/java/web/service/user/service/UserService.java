@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import web.service.grpc.user.*;
+import web.service.user.grpc.*;
 import web.service.user.model.User;
 import web.service.user.model.UserDetailCustom;
 import web.service.user.model.VerificationToken;
@@ -95,15 +95,11 @@ public class UserService {
             if(user != null ) {
                 registrationService.createNewVerifyToken(request.getEmail(),
                                                          request.getPassword(),
-                                                         request.getFirstName(),
-                                                         request.getLastName(),
-                                                         request.getSex());
+                                                         request.getName());
             }  else {
                 registrationService.createNewAccount(request.getEmail(),
                         request.getPassword(),
-                        request.getFirstName(),
-                        request.getLastName(),
-                        request.getSex());
+                        request.getName());
             }
 
             if(!sendingTokenToVerifyEmail(request.getEmail())) {
