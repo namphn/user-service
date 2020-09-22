@@ -56,11 +56,9 @@ public class UserService {
         LoginResponse.Builder response = LoginResponse.newBuilder();
         final UserDetailCustom userDetails = loadUserByEmail(loginRequest.getEmail());
         
-        if(userDetails == null
-                || !loginRequest.getPassword().equals(userDetails.getPassword())){
-
+        if(userDetails == null) response.setStatus(Status.INVALID_PASSWORD);
+        else if(!loginRequest.getPassword().equals(userDetails.getPassword())){
             response.setStatus(Status.HAVE_NOT_ACCOUNT);
-
         } else {
 
             String username = userDetails.getUsername();
@@ -96,19 +94,18 @@ public class UserService {
                 registrationService.createNewVerifyToken(request.getEmail(),
                                                          request.getPassword(),
                                                          request.getName());
-            }  else {
-                registrationService.createNewAccount(request.getEmail(),
-                        request.getPassword(),
-                        request.getName());
-            }
-
-            if(!sendingTokenToVerifyEmail(request.getEmail())) {
-                response.setStatus(Status.INVALID_EMAIL);
             } else {
-                response.setStatus(Status.SENT_EMAIL);
+                if(!sendingTokenToVerifyEmail(request.getEmail())) {
+                    response.setStatus(Status.INVALID_EMAIL);
+                } else {
+                    response.setStatus(Status.SENT_EMAIL);
+                    registrationService.createNewAccount(
+                            request.getEmail(),
+                            request.getPassword(),
+                            request.getName());
+                }
             }
         }
-
         return response.build();
     }
     public boolean sendingTokenToVerifyEmail(String email){
@@ -117,8 +114,7 @@ public class UserService {
         if(verificationToken == null){
             return false;
         }
-        sendingMailService.sendVerificationMail(email,verificationToken.getToken());
-        return true;
+        return sendingMailService.sendVerificationMail(email,verificationToken.getToken());
     }
 
     public PasswordResetResponse sendingResetPasswordEmail(PasswordResetRequest request){

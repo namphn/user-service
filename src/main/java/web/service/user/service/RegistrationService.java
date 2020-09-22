@@ -15,10 +15,7 @@ public class RegistrationService {
 
     public boolean checkForExistingAccount(String email){
         User user = userRepository.findByEmail(email);
-        if(user != null && user.isEnable()) {
-            return true;
-        }
-        else return false;
+        return (user != null && user.isEnable());
     }
 
     public void createNewAccount(String email, String password, String name){

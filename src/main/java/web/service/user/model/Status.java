@@ -14,4 +14,5 @@ public class Status {
     public static final String SAVED_NEW_PASSWORD = "SAVED_NEW_PASSWORD";
     public static final String ACCEPT = "ACCEPT";
     public static final String SAVED_INFORMATION = "SAVED INFORMATION";
+    public static final String INVALID_PASSWORD = "INVALID PASSWORD";
 }

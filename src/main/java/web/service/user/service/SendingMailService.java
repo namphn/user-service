@@ -42,8 +42,10 @@ public class SendingMailService {
             body = FreeMarkerTemplateUtils.processTemplateIntoString(t,map);
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         } catch (TemplateException e) {
             e.printStackTrace();
+            return false;
         }
         return sendMail(toEMail, subject, body);
     }
