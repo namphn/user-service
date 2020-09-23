@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import web.service.user.model.MailProperties;
@@ -21,8 +22,8 @@ import java.util.Properties;
 @Service
 public class SendingMailService {
 
-    private final web.service.user.model.MailProperties mailProperties;
-    private final freemarker.template.Configuration templates;
+    private final MailProperties mailProperties;
+    private final Configuration templates;
 
     @Autowired
     public SendingMailService(MailProperties mailProperties, Configuration templates) {
@@ -76,7 +77,7 @@ public class SendingMailService {
         prop.put("mail.smtp.starttls.enable", "true");
 
         Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
+                new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(mailProperties.getSmtp().getUsername(), mailProperties.getSmtp().getPassword());
                     }

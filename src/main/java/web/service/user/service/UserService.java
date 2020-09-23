@@ -94,15 +94,25 @@ public class UserService {
                 registrationService.createNewVerifyToken(request.getEmail(),
                                                          request.getPassword(),
                                                          request.getName());
-            } else {
                 if(!sendingTokenToVerifyEmail(request.getEmail())) {
+                    deleteUser(request.getEmail());
+                    response.setStatus(Status.INVALID_EMAIL);
+                }
+                else {
+                    response.setStatus(Status.SENT_EMAIL);
+
+                }
+            } else {
+                registrationService.createNewAccount(
+                        request.getEmail(),
+                        request.getPassword(),
+                        request.getName());
+                if(!sendingTokenToVerifyEmail(request.getEmail())) {
+                    deleteUser(request.getEmail());
                     response.setStatus(Status.INVALID_EMAIL);
                 } else {
                     response.setStatus(Status.SENT_EMAIL);
-                    registrationService.createNewAccount(
-                            request.getEmail(),
-                            request.getPassword(),
-                            request.getName());
+
                 }
             }
         }
@@ -255,5 +265,10 @@ public class UserService {
             return response.build();
         }
         return response.build();
+    }
+
+    private boolean deleteUser(String email) {
+        User user = userRepository.deleteByEmail(email);
+        return user != null;
     }
 }
