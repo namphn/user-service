@@ -56,9 +56,9 @@ public class UserService {
         LoginResponse.Builder response = LoginResponse.newBuilder();
         final UserDetailCustom userDetails = loadUserByEmail(loginRequest.getEmail());
         
-        if(userDetails == null) response.setStatus(Status.INVALID_PASSWORD);
+        if(userDetails == null) response.setStatus(Status.HAVE_NOT_ACCOUNT);
         else if(!loginRequest.getPassword().equals(userDetails.getPassword())){
-            response.setStatus(Status.HAVE_NOT_ACCOUNT);
+            response.setStatus(Status.INVALID_PASSWORD);
         } else {
 
             String username = userDetails.getUsername();
@@ -229,7 +229,8 @@ public class UserService {
     }
 
     public UserDetailCustom loadUserByEmail(String email){
-        User user = userRepository.findByEmail(email);
+        String userEmail = email.replaceAll("\\s", "");
+        User user = userRepository.findByEmail(userEmail);
         if(user == null) {
             return null;
         }
@@ -237,7 +238,8 @@ public class UserService {
     }
 
     public User findUserByEmail(String email){
-        User user = userRepository.findByEmail(email);
+        String userEmail = email.replaceAll("\\s", "");
+        User user = userRepository.findByEmail(userEmail);
         if(user == null) {
             return null;
         }
