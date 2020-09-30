@@ -100,7 +100,6 @@ public class UserService {
                 }
                 else {
                     response.setStatus(Status.SENT_EMAIL);
-
                 }
             } else {
                 registrationService.createNewAccount(
@@ -112,7 +111,6 @@ public class UserService {
                     response.setStatus(Status.INVALID_EMAIL);
                 } else {
                     response.setStatus(Status.SENT_EMAIL);
-
                 }
             }
         }
@@ -270,7 +268,7 @@ public class UserService {
     }
 
     private boolean deleteUser(String email) {
-        User user = userRepository.deleteByEmail(email);
-        return user != null;
+        String userId = userRepository.deleteByEmail(email);
+        return userId != null;
     }
 }

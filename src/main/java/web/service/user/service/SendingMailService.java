@@ -93,8 +93,7 @@ public class SendingMailService {
             message.setSubject(subject);
             message.setContent(content, "text/html");
             Transport.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return false;
         }
         return true;

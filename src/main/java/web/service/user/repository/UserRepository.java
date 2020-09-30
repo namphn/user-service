@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, Long> {
+public interface UserRepository extends MongoRepository<User, String> {
     User findByEmail(String email);
     Optional<User> findById(String id);
     Page<User> getAllByEnableTrue(Pageable pageable);
     List<User> findAll();
-    User deleteByEmail(String email);
+    String deleteByEmail(String email);
 }
