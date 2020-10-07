@@ -20,6 +20,7 @@ import web.service.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -270,5 +271,15 @@ public class UserService {
     private boolean deleteUser(String email) {
         String userId = userRepository.deleteByEmail(email);
         return userId != null;
+    }
+
+    public GetUserResponse getUserById(GetUserRequest request) {
+        User user = userRepository.getById(request.getUserId());
+        GetUserResponse.Builder response = GetUserResponse.newBuilder();
+        if(user != null) {
+            response.setEmail(user.getEmail());
+            response.setName(user.getEmail());
+        }
+        return response.build();
     }
 }

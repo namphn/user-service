@@ -85,4 +85,10 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         responseObserver.onNext(userService.getAllUser(request));
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getUser(GetUserRequest request, StreamObserver<GetUserResponse> responseObserver) {
+        responseObserver.onNext(userService.getUserById(request));
+        responseObserver.onCompleted();
+    }
 }
