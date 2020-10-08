@@ -11,16 +11,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import web.service.user.grpc.*;
+import web.service.user.model.*;
 import web.service.user.model.User;
-import web.service.user.model.UserDetailCustom;
-import web.service.user.model.VerificationToken;
-import web.service.user.model.PasswordResetToken;
-import web.service.user.model.Status;
+import web.service.user.repository.UserInfoRepository;
 import web.service.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -34,6 +30,7 @@ public class UserService {
     private final VerificationTokenRegistrationService verificationTokenRegistrationService;
     private final SendingMailService sendingMailService;
     private final PasswordForgotTokenService passwordForgotTokenService;
+    private final UserInfoRepository userInfoRepository;
 
     public UserService(AuthenticationManager authenticationManager,
                        UserRepository userRepository,
@@ -41,7 +38,7 @@ public class UserService {
                        RegistrationService registrationService,
                        VerificationTokenRegistrationService verificationTokenRegistrationService,
                        SendingMailService sendingMailService,
-                       PasswordForgotTokenService passwordForgotTokenService) {
+                       PasswordForgotTokenService passwordForgotTokenService, UserInfoRepository userInfoRepository) {
 
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -50,6 +47,7 @@ public class UserService {
         this.verificationTokenRegistrationService = verificationTokenRegistrationService;
         this.sendingMailService = sendingMailService;
         this.passwordForgotTokenService = passwordForgotTokenService;
+        this.userInfoRepository = userInfoRepository;
     }
 
     public LoginResponse authenticateUser(LoginRequest loginRequest){
@@ -280,6 +278,21 @@ public class UserService {
             response.setEmail(user.getEmail());
             response.setName(user.getEmail());
         }
+        return response.build();
+    }
+
+    public SaveUserAvatarResponse saveUserAvatar(SaveUserAvatarRequest request) {
+        UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
+        SaveUserAvatarResponse.Builder response = SaveUserAvatarResponse.newBuilder();
+        if(userInfo == null) {
+            userInfo = new UserInfo();
+            userInfo.setUserId(request.getUserId());
+            userInfo.setAvatar(request.getImageSource());
+            userInfoRepository.save(userInfo);
+        } else {
+            userInfo.setAvatar(request.getImageSource());
+        }
+        response.setStatus(Status.SUCCESS);
         return response.build();
     }
 }
