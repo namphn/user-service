@@ -18,6 +18,7 @@ public class Status {
     public static final String SUCCESS = "SUCCESS";
     public static final String NODATA = "HAVE NOT DATA";
     public static final String INVALID_PASSWORD = "INVALID PASSWORD";
+    public static final String CAN_NOT_FIND_USER = "CAN NOT FIND USER";
 
     public static class StatusCode {
         public static final String NORMAL = "200";

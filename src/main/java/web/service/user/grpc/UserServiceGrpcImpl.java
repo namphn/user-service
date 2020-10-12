@@ -91,4 +91,16 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         responseObserver.onNext(userService.getUserById(request));
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void renameUser(ChangeUserNameRpcRequest request, StreamObserver<ChangeUserNameRpcResponse> responseObserver) {
+        responseObserver.onNext(userService.changeUserName(request));
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void saveAvatar(SaveUserAvatarRequest request, StreamObserver<SaveUserAvatarResponse> responseObserver) {
+        responseObserver.onNext(userService.saveUserAvatar(request));
+        responseObserver.onCompleted();
+    }
 }

@@ -281,6 +281,20 @@ public class UserService {
         return response.build();
     }
 
+    public ChangeUserNameRpcResponse changeUserName(ChangeUserNameRpcRequest request) {
+        User user = userRepository.getById(request.getUserId());
+        ChangeUserNameRpcResponse.Builder response = ChangeUserNameRpcResponse.newBuilder();
+
+        if(user != null) {
+            user.setName(request.getUsername());
+            userRepository.save(user);
+            response.setStatus(Status.SUCCESS);
+        } else {
+            response.setStatus(Status.CAN_NOT_FIND_USER);
+        }
+        return response.build();
+    }
+
     public SaveUserAvatarResponse saveUserAvatar(SaveUserAvatarRequest request) {
         UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
         SaveUserAvatarResponse.Builder response = SaveUserAvatarResponse.newBuilder();
