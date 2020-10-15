@@ -296,16 +296,16 @@ public class UserService {
     }
 
     public SaveUserAvatarResponse saveUserAvatar(SaveUserAvatarRequest request) {
-        UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
+         UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
         SaveUserAvatarResponse.Builder response = SaveUserAvatarResponse.newBuilder();
         if(userInfo == null) {
             userInfo = new UserInfo();
             userInfo.setUserId(request.getUserId());
             userInfo.setAvatar(request.getImageSource());
-            userInfoRepository.save(userInfo);
         } else {
             userInfo.setAvatar(request.getImageSource());
         }
+        userInfoRepository.save(userInfo);
         response.setStatus(Status.SUCCESS);
         return response.build();
     }
