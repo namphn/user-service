@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import web.service.user.grpc.*;
 import web.service.user.model.*;
 import web.service.user.model.User;
+import web.service.user.repository.ImagesRepository;
 import web.service.user.repository.UserInfoRepository;
 import web.service.user.repository.UserRepository;
 
@@ -31,6 +32,7 @@ public class UserService {
     private final SendingMailService sendingMailService;
     private final PasswordForgotTokenService passwordForgotTokenService;
     private final UserInfoRepository userInfoRepository;
+    private final ImagesRepository imagesRepository;
 
     public UserService(AuthenticationManager authenticationManager,
                        UserRepository userRepository,
@@ -38,7 +40,7 @@ public class UserService {
                        RegistrationService registrationService,
                        VerificationTokenRegistrationService verificationTokenRegistrationService,
                        SendingMailService sendingMailService,
-                       PasswordForgotTokenService passwordForgotTokenService, UserInfoRepository userInfoRepository) {
+                       PasswordForgotTokenService passwordForgotTokenService, UserInfoRepository userInfoRepository, ImagesRepository imagesRepository) {
 
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -48,6 +50,7 @@ public class UserService {
         this.sendingMailService = sendingMailService;
         this.passwordForgotTokenService = passwordForgotTokenService;
         this.userInfoRepository = userInfoRepository;
+        this.imagesRepository = imagesRepository;
     }
 
     public LoginResponse authenticateUser(LoginRequest loginRequest){
@@ -305,6 +308,13 @@ public class UserService {
         } else {
             userInfo.setAvatar(request.getImageSource());
         }
+        Images userImage = imagesRepository.getByUserId(request.getUserId());
+        if(userImage == null) {
+            userImage = new Images(request.getUserId());
+        }
+
+        userImage.getImageIds().add(request.getImageSource());
+        imagesRepository.save(userImage);
         userInfoRepository.save(userInfo);
         response.setStatus(Status.SUCCESS);
         return response.build();
