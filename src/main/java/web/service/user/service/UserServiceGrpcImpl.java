@@ -1,4 +1,4 @@
-package web.service.user.grpc;
+package web.service.user.service;
 
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;

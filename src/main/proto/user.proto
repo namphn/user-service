@@ -122,6 +122,14 @@ message SaveUserAvatarResponse {
   string status = 1;
 }
 
+message GetUserAvatarRequest {
+  string userId = 1;
+}
+
+message GetUserAvatarResponse {
+  string avatar = 1;
+}
+
 service UserService{
 
   // create a new account, save new email, password and send verification email
@@ -165,5 +173,8 @@ service UserService{
 
   // save source user's avatar to DB
   rpc SaveAvatar(SaveUserAvatarRequest) returns (SaveUserAvatarResponse);
+
+  // get user avatar
+  rpc getUserAvatar(GetUserAvatarRequest) returns (GetUserAvatarResponse);
 }
 

@@ -18,6 +18,7 @@ import web.service.user.repository.UserInfoRepository;
 import web.service.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 public class UserService {
