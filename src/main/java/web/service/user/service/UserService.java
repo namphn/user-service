@@ -320,4 +320,13 @@ public class UserService {
         response.setStatus(Status.SUCCESS);
         return response.build();
     }
+
+    public GetUserAvatarResponse getUserAvatar(GetUserAvatarRequest request) {
+        UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
+        GetUserAvatarResponse.Builder response = GetUserAvatarResponse.newBuilder();
+        if(userInfo != null) {
+            response.setAvatar(userInfo.getAvatar());
+        }
+        return response.build();
+    }
 }

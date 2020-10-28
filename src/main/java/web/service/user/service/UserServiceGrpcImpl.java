@@ -103,4 +103,10 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         responseObserver.onNext(userService.saveUserAvatar(request));
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getUserAvatar(GetUserAvatarRequest request, StreamObserver<GetUserAvatarResponse> responseObserver) {
+        responseObserver.onNext(userService.getUserAvatar(request));
+        responseObserver.onCompleted();
+    }
 }
