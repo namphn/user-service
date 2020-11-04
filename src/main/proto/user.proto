@@ -130,6 +130,15 @@ message GetUserAvatarResponse {
   string avatar = 1;
 }
 
+message AddNewImageRequest {
+  string image = 1;
+  string userId = 2;
+}
+
+message AddNewImageResponse {
+  bool success = 1;
+}
+
 service UserService{
 
   // create a new account, save new email, password and send verification email
@@ -154,7 +163,7 @@ service UserService{
   rpc VerificationResetPasswordToken (VerificationResetPasswordTokenRequest)
       returns (VerificationResetPasswordTokenResponse);
 
-  // Grpc Api cotroller
+  // gRPC Api
 
   // filter controller call to user service
   rpc GetEmailFromToken (GetEmailRequest) returns (GetEmailResponse);
@@ -176,5 +185,8 @@ service UserService{
 
   // get user avatar
   rpc getUserAvatar(GetUserAvatarRequest) returns (GetUserAvatarResponse);
+
+  // user add image
+  rpc addNewImage(AddNewImageRequest) returns (AddNewImageResponse);
 }
 

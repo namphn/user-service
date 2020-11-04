@@ -17,6 +17,8 @@ import web.service.user.repository.UserInfoRepository;
 import web.service.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -330,6 +332,26 @@ public class UserService {
         if(userInfo != null) {
             response.setAvatar(userInfo.getAvatar());
         }
+        return response.build();
+    }
+
+    public AddNewImageResponse addNewImage(AddNewImageRequest request) {
+        AddNewImageResponse.Builder response = AddNewImageResponse.newBuilder();
+
+        UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
+        if(userInfo == null) {
+            User user = userRepository.getById(request.getUserId());
+            if(user == null) {
+                response.setSuccess(false);
+                return response.build();
+            }
+            userInfo = new UserInfo(request.getUserId());
+        }
+        List<String> imageList = userInfo.getImages();
+        if(imageList == null) imageList = new ArrayList<>();
+        imageList.add(request.getImage());
+        userInfoRepository.save(userInfo);
+        response.setSuccess(true);
         return response.build();
     }
 }
