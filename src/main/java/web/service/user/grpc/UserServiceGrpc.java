@@ -475,6 +475,38 @@ public final class UserServiceGrpc {
      return getGetUserAvatarMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<web.service.user.grpc.AddNewImageRequest,
+      web.service.user.grpc.AddNewImageResponse> getAddNewImageMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "addNewImage",
+      requestType = web.service.user.grpc.AddNewImageRequest.class,
+      responseType = web.service.user.grpc.AddNewImageResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<web.service.user.grpc.AddNewImageRequest,
+      web.service.user.grpc.AddNewImageResponse> getAddNewImageMethod() {
+    io.grpc.MethodDescriptor<web.service.user.grpc.AddNewImageRequest, web.service.user.grpc.AddNewImageResponse> getAddNewImageMethod;
+    if ((getAddNewImageMethod = UserServiceGrpc.getAddNewImageMethod) == null) {
+      synchronized (UserServiceGrpc.class) {
+        if ((getAddNewImageMethod = UserServiceGrpc.getAddNewImageMethod) == null) {
+          UserServiceGrpc.getAddNewImageMethod = getAddNewImageMethod = 
+              io.grpc.MethodDescriptor.<web.service.user.grpc.AddNewImageRequest, web.service.user.grpc.AddNewImageResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "UserService", "addNewImage"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  web.service.user.grpc.AddNewImageRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  web.service.user.grpc.AddNewImageResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new UserServiceMethodDescriptorSupplier("addNewImage"))
+                  .build();
+          }
+        }
+     }
+     return getAddNewImageMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -642,6 +674,16 @@ public final class UserServiceGrpc {
       asyncUnimplementedUnaryCall(getGetUserAvatarMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * user add image
+     * </pre>
+     */
+    public void addNewImage(web.service.user.grpc.AddNewImageRequest request,
+        io.grpc.stub.StreamObserver<web.service.user.grpc.AddNewImageResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getAddNewImageMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -742,6 +784,13 @@ public final class UserServiceGrpc {
                 web.service.user.grpc.GetUserAvatarRequest,
                 web.service.user.grpc.GetUserAvatarResponse>(
                   this, METHODID_GET_USER_AVATAR)))
+          .addMethod(
+            getAddNewImageMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                web.service.user.grpc.AddNewImageRequest,
+                web.service.user.grpc.AddNewImageResponse>(
+                  this, METHODID_ADD_NEW_IMAGE)))
           .build();
     }
   }
@@ -917,6 +966,17 @@ public final class UserServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getGetUserAvatarMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * user add image
+     * </pre>
+     */
+    public void addNewImage(web.service.user.grpc.AddNewImageRequest request,
+        io.grpc.stub.StreamObserver<web.service.user.grpc.AddNewImageResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getAddNewImageMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -1075,6 +1135,16 @@ public final class UserServiceGrpc {
     public web.service.user.grpc.GetUserAvatarResponse getUserAvatar(web.service.user.grpc.GetUserAvatarRequest request) {
       return blockingUnaryCall(
           getChannel(), getGetUserAvatarMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * user add image
+     * </pre>
+     */
+    public web.service.user.grpc.AddNewImageResponse addNewImage(web.service.user.grpc.AddNewImageRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getAddNewImageMethod(), getCallOptions(), request);
     }
   }
 
@@ -1249,6 +1319,17 @@ public final class UserServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetUserAvatarMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * user add image
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<web.service.user.grpc.AddNewImageResponse> addNewImage(
+        web.service.user.grpc.AddNewImageRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getAddNewImageMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_REGISTRATION = 0;
@@ -1265,6 +1346,7 @@ public final class UserServiceGrpc {
   private static final int METHODID_RENAME_USER = 11;
   private static final int METHODID_SAVE_AVATAR = 12;
   private static final int METHODID_GET_USER_AVATAR = 13;
+  private static final int METHODID_ADD_NEW_IMAGE = 14;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1338,6 +1420,10 @@ public final class UserServiceGrpc {
         case METHODID_GET_USER_AVATAR:
           serviceImpl.getUserAvatar((web.service.user.grpc.GetUserAvatarRequest) request,
               (io.grpc.stub.StreamObserver<web.service.user.grpc.GetUserAvatarResponse>) responseObserver);
+          break;
+        case METHODID_ADD_NEW_IMAGE:
+          serviceImpl.addNewImage((web.service.user.grpc.AddNewImageRequest) request,
+              (io.grpc.stub.StreamObserver<web.service.user.grpc.AddNewImageResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1414,6 +1500,7 @@ public final class UserServiceGrpc {
               .addMethod(getRenameUserMethod())
               .addMethod(getSaveAvatarMethod())
               .addMethod(getGetUserAvatarMethod())
+              .addMethod(getAddNewImageMethod())
               .build();
         }
       }
