@@ -179,6 +179,18 @@ public  abstract class UserService
         web.service.user.grpc.GetUserAvatarRequest request,
         com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserAvatarResponse> done);
 
+    /**
+     * <pre>
+     * user add image
+     * </pre>
+     *
+     * <code>rpc addNewImage(.AddNewImageRequest) returns (.AddNewImageResponse);</code>
+     */
+    public abstract void addNewImage(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.AddNewImageRequest request,
+        com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done);
+
   }
 
   public static com.google.protobuf.Service newReflectiveService(
@@ -296,6 +308,14 @@ public  abstract class UserService
         impl.getUserAvatar(controller, request, done);
       }
 
+      @java.lang.Override
+      public  void addNewImage(
+          com.google.protobuf.RpcController controller,
+          web.service.user.grpc.AddNewImageRequest request,
+          com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done) {
+        impl.addNewImage(controller, request, done);
+      }
+
     };
   }
 
@@ -346,6 +366,8 @@ public  abstract class UserService
             return impl.saveAvatar(controller, (web.service.user.grpc.SaveUserAvatarRequest)request);
           case 13:
             return impl.getUserAvatar(controller, (web.service.user.grpc.GetUserAvatarRequest)request);
+          case 14:
+            return impl.addNewImage(controller, (web.service.user.grpc.AddNewImageRequest)request);
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -388,6 +410,8 @@ public  abstract class UserService
             return web.service.user.grpc.SaveUserAvatarRequest.getDefaultInstance();
           case 13:
             return web.service.user.grpc.GetUserAvatarRequest.getDefaultInstance();
+          case 14:
+            return web.service.user.grpc.AddNewImageRequest.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -430,6 +454,8 @@ public  abstract class UserService
             return web.service.user.grpc.SaveUserAvatarResponse.getDefaultInstance();
           case 13:
             return web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance();
+          case 14:
+            return web.service.user.grpc.AddNewImageResponse.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -606,6 +632,18 @@ public  abstract class UserService
       web.service.user.grpc.GetUserAvatarRequest request,
       com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserAvatarResponse> done);
 
+  /**
+   * <pre>
+   * user add image
+   * </pre>
+   *
+   * <code>rpc addNewImage(.AddNewImageRequest) returns (.AddNewImageResponse);</code>
+   */
+  public abstract void addNewImage(
+      com.google.protobuf.RpcController controller,
+      web.service.user.grpc.AddNewImageRequest request,
+      com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done);
+
   public static final
       com.google.protobuf.Descriptors.ServiceDescriptor
       getDescriptor() {
@@ -698,6 +736,11 @@ public  abstract class UserService
           com.google.protobuf.RpcUtil.<web.service.user.grpc.GetUserAvatarResponse>specializeCallback(
             done));
         return;
+      case 14:
+        this.addNewImage(controller, (web.service.user.grpc.AddNewImageRequest)request,
+          com.google.protobuf.RpcUtil.<web.service.user.grpc.AddNewImageResponse>specializeCallback(
+            done));
+        return;
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -740,6 +783,8 @@ public  abstract class UserService
         return web.service.user.grpc.SaveUserAvatarRequest.getDefaultInstance();
       case 13:
         return web.service.user.grpc.GetUserAvatarRequest.getDefaultInstance();
+      case 14:
+        return web.service.user.grpc.AddNewImageRequest.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -782,6 +827,8 @@ public  abstract class UserService
         return web.service.user.grpc.SaveUserAvatarResponse.getDefaultInstance();
       case 13:
         return web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance();
+      case 14:
+        return web.service.user.grpc.AddNewImageResponse.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -1012,6 +1059,21 @@ public  abstract class UserService
           web.service.user.grpc.GetUserAvatarResponse.class,
           web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance()));
     }
+
+    public  void addNewImage(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.AddNewImageRequest request,
+        com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(14),
+        controller,
+        request,
+        web.service.user.grpc.AddNewImageResponse.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          web.service.user.grpc.AddNewImageResponse.class,
+          web.service.user.grpc.AddNewImageResponse.getDefaultInstance()));
+    }
   }
 
   public static BlockingInterface newBlockingStub(
@@ -1088,6 +1150,11 @@ public  abstract class UserService
     public web.service.user.grpc.GetUserAvatarResponse getUserAvatar(
         com.google.protobuf.RpcController controller,
         web.service.user.grpc.GetUserAvatarRequest request)
+        throws com.google.protobuf.ServiceException;
+
+    public web.service.user.grpc.AddNewImageResponse addNewImage(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.AddNewImageRequest request)
         throws com.google.protobuf.ServiceException;
   }
 
@@ -1263,6 +1330,18 @@ public  abstract class UserService
         controller,
         request,
         web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance());
+    }
+
+
+    public web.service.user.grpc.AddNewImageResponse addNewImage(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.AddNewImageRequest request)
+        throws com.google.protobuf.ServiceException {
+      return (web.service.user.grpc.AddNewImageResponse) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(14),
+        controller,
+        request,
+        web.service.user.grpc.AddNewImageResponse.getDefaultInstance());
     }
 
   }
