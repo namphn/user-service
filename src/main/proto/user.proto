@@ -139,6 +139,27 @@ message AddNewImageResponse {
   bool success = 1;
 }
 
+message GetUserInfoRequest {
+  string userId = 1;
+}
+
+message GetUserInfoResponse {
+  string userName = 1;
+  string city = 2;
+  string country = 3;
+  string description = 4;
+  string avatar = 5;
+  repeated string following = 6;
+  repeated string followers = 7;
+  repeated UserPots pots = 8;
+  string status = 9;
+}
+
+message UserPots {
+  string potsId = 1;
+  string image = 2;
+}
+
 service UserService{
 
   // create a new account, save new email, password and send verification email
@@ -188,5 +209,7 @@ service UserService{
 
   // user add image
   rpc addNewImage(AddNewImageRequest) returns (AddNewImageResponse);
+
+  rpc getUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
 }
 

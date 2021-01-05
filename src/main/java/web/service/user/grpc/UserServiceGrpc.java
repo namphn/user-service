@@ -507,6 +507,38 @@ public final class UserServiceGrpc {
      return getAddNewImageMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<web.service.user.grpc.GetUserInfoRequest,
+      web.service.user.grpc.GetUserInfoResponse> getGetUserInfoMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getUserInfo",
+      requestType = web.service.user.grpc.GetUserInfoRequest.class,
+      responseType = web.service.user.grpc.GetUserInfoResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<web.service.user.grpc.GetUserInfoRequest,
+      web.service.user.grpc.GetUserInfoResponse> getGetUserInfoMethod() {
+    io.grpc.MethodDescriptor<web.service.user.grpc.GetUserInfoRequest, web.service.user.grpc.GetUserInfoResponse> getGetUserInfoMethod;
+    if ((getGetUserInfoMethod = UserServiceGrpc.getGetUserInfoMethod) == null) {
+      synchronized (UserServiceGrpc.class) {
+        if ((getGetUserInfoMethod = UserServiceGrpc.getGetUserInfoMethod) == null) {
+          UserServiceGrpc.getGetUserInfoMethod = getGetUserInfoMethod = 
+              io.grpc.MethodDescriptor.<web.service.user.grpc.GetUserInfoRequest, web.service.user.grpc.GetUserInfoResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "UserService", "getUserInfo"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  web.service.user.grpc.GetUserInfoRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  web.service.user.grpc.GetUserInfoResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new UserServiceMethodDescriptorSupplier("getUserInfo"))
+                  .build();
+          }
+        }
+     }
+     return getGetUserInfoMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -684,6 +716,13 @@ public final class UserServiceGrpc {
       asyncUnimplementedUnaryCall(getAddNewImageMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getUserInfo(web.service.user.grpc.GetUserInfoRequest request,
+        io.grpc.stub.StreamObserver<web.service.user.grpc.GetUserInfoResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetUserInfoMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -791,6 +830,13 @@ public final class UserServiceGrpc {
                 web.service.user.grpc.AddNewImageRequest,
                 web.service.user.grpc.AddNewImageResponse>(
                   this, METHODID_ADD_NEW_IMAGE)))
+          .addMethod(
+            getGetUserInfoMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                web.service.user.grpc.GetUserInfoRequest,
+                web.service.user.grpc.GetUserInfoResponse>(
+                  this, METHODID_GET_USER_INFO)))
           .build();
     }
   }
@@ -977,6 +1023,14 @@ public final class UserServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getAddNewImageMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getUserInfo(web.service.user.grpc.GetUserInfoRequest request,
+        io.grpc.stub.StreamObserver<web.service.user.grpc.GetUserInfoResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetUserInfoMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -1145,6 +1199,13 @@ public final class UserServiceGrpc {
     public web.service.user.grpc.AddNewImageResponse addNewImage(web.service.user.grpc.AddNewImageRequest request) {
       return blockingUnaryCall(
           getChannel(), getAddNewImageMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public web.service.user.grpc.GetUserInfoResponse getUserInfo(web.service.user.grpc.GetUserInfoRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getGetUserInfoMethod(), getCallOptions(), request);
     }
   }
 
@@ -1330,6 +1391,14 @@ public final class UserServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getAddNewImageMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<web.service.user.grpc.GetUserInfoResponse> getUserInfo(
+        web.service.user.grpc.GetUserInfoRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetUserInfoMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_REGISTRATION = 0;
@@ -1347,6 +1416,7 @@ public final class UserServiceGrpc {
   private static final int METHODID_SAVE_AVATAR = 12;
   private static final int METHODID_GET_USER_AVATAR = 13;
   private static final int METHODID_ADD_NEW_IMAGE = 14;
+  private static final int METHODID_GET_USER_INFO = 15;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1425,6 +1495,10 @@ public final class UserServiceGrpc {
           serviceImpl.addNewImage((web.service.user.grpc.AddNewImageRequest) request,
               (io.grpc.stub.StreamObserver<web.service.user.grpc.AddNewImageResponse>) responseObserver);
           break;
+        case METHODID_GET_USER_INFO:
+          serviceImpl.getUserInfo((web.service.user.grpc.GetUserInfoRequest) request,
+              (io.grpc.stub.StreamObserver<web.service.user.grpc.GetUserInfoResponse>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1501,6 +1575,7 @@ public final class UserServiceGrpc {
               .addMethod(getSaveAvatarMethod())
               .addMethod(getGetUserAvatarMethod())
               .addMethod(getAddNewImageMethod())
+              .addMethod(getGetUserInfoMethod())
               .build();
         }
       }

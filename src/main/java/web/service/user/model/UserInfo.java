@@ -17,6 +17,9 @@ public class UserInfo {
     String userId;
     String avatar;
     String intro;
+    String city;
+    String country;
+    String description;
     List<String> images;
 
     public UserInfo(String userId) {

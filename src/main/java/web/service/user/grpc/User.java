@@ -169,6 +169,21 @@ public final class User {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_AddNewImageResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetUserInfoRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetUserInfoRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetUserInfoResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetUserInfoResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_UserPots_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_UserPots_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -219,34 +234,42 @@ public final class User {
       "est\022\016\n\006userId\030\001 \001(\t\"\'\n\025GetUserAvatarResp" +
       "onse\022\016\n\006avatar\030\001 \001(\t\"3\n\022AddNewImageReque" +
       "st\022\r\n\005image\030\001 \001(\t\022\016\n\006userId\030\002 \001(\t\"&\n\023Add" +
-      "NewImageResponse\022\017\n\007success\030\001 \001(\0102\363\007\n\013Us" +
-      "erService\022C\n\014Registration\022\030.Registration" +
-      "RequestGrpc\032\031.RegistrationResponseGrpc\022&" +
-      "\n\005Login\022\r.LoginRequest\032\016.LoginResponse\022L" +
-      "\n\035VerificationTokenRegistration\022\024.Confir" +
-      "mEmailRequest\032\025.ConfirmEmailResponse\022?\n\016" +
-      "PasswordForgot\022\025.PasswordResetRequest\032\026." +
-      "PasswordResetResponse\022:\n\rPasswordReset\022\023" +
-      ".NewPasswordRequest\032\024.NewPasswordRespons" +
-      "e\022\\\n\027RegistrationInformation\022\037.Registrat" +
-      "ionInformationRequest\032 .RegistrationInfo" +
-      "rmationResponse\022q\n\036VerificationResetPass" +
-      "wordToken\022&.VerificationResetPasswordTok" +
-      "enRequest\032\'.VerificationResetPasswordTok" +
-      "enResponse\0228\n\021GetEmailFromToken\022\020.GetEma" +
-      "ilRequest\032\021.GetEmailResponse\022>\n\rValidate" +
-      "Token\022\025.ValidateTokenRequest\032\026.ValidateT" +
-      "okenResponse\0225\n\nGetAllUser\022\022.GetAllUserR" +
-      "equest\032\023.GetAllUserResponse\022,\n\007GetUser\022\017" +
-      ".GetUserRequest\032\020.GetUserResponse\022C\n\nRen" +
-      "ameUser\022\031.ChangeUserNameRpcRequest\032\032.Cha" +
-      "ngeUserNameRpcResponse\022=\n\nSaveAvatar\022\026.S" +
-      "aveUserAvatarRequest\032\027.SaveUserAvatarRes" +
-      "ponse\022>\n\rgetUserAvatar\022\025.GetUserAvatarRe" +
-      "quest\032\026.GetUserAvatarResponse\0228\n\013addNewI" +
-      "mage\022\023.AddNewImageRequest\032\024.AddNewImageR" +
-      "esponseB\034\n\025web.service.user.grpcP\001\210\001\001b\006p" +
-      "roto3"
+      "NewImageResponse\022\017\n\007success\030\001 \001(\010\"$\n\022Get" +
+      "UserInfoRequest\022\016\n\006userId\030\001 \001(\t\"\272\001\n\023GetU" +
+      "serInfoResponse\022\020\n\010userName\030\001 \001(\t\022\014\n\004cit" +
+      "y\030\002 \001(\t\022\017\n\007country\030\003 \001(\t\022\023\n\013description\030" +
+      "\004 \001(\t\022\016\n\006avatar\030\005 \001(\t\022\021\n\tfollowing\030\006 \003(\t" +
+      "\022\021\n\tfollowers\030\007 \003(\t\022\027\n\004pots\030\010 \003(\0132\t.User" +
+      "Pots\022\016\n\006status\030\t \001(\t\")\n\010UserPots\022\016\n\006pots" +
+      "Id\030\001 \001(\t\022\r\n\005image\030\002 \001(\t2\255\010\n\013UserService\022" +
+      "C\n\014Registration\022\030.RegistrationRequestGrp" +
+      "c\032\031.RegistrationResponseGrpc\022&\n\005Login\022\r." +
+      "LoginRequest\032\016.LoginResponse\022L\n\035Verifica" +
+      "tionTokenRegistration\022\024.ConfirmEmailRequ" +
+      "est\032\025.ConfirmEmailResponse\022?\n\016PasswordFo" +
+      "rgot\022\025.PasswordResetRequest\032\026.PasswordRe" +
+      "setResponse\022:\n\rPasswordReset\022\023.NewPasswo" +
+      "rdRequest\032\024.NewPasswordResponse\022\\\n\027Regis" +
+      "trationInformation\022\037.RegistrationInforma" +
+      "tionRequest\032 .RegistrationInformationRes" +
+      "ponse\022q\n\036VerificationResetPasswordToken\022" +
+      "&.VerificationResetPasswordTokenRequest\032" +
+      "\'.VerificationResetPasswordTokenResponse" +
+      "\0228\n\021GetEmailFromToken\022\020.GetEmailRequest\032" +
+      "\021.GetEmailResponse\022>\n\rValidateToken\022\025.Va" +
+      "lidateTokenRequest\032\026.ValidateTokenRespon" +
+      "se\0225\n\nGetAllUser\022\022.GetAllUserRequest\032\023.G" +
+      "etAllUserResponse\022,\n\007GetUser\022\017.GetUserRe" +
+      "quest\032\020.GetUserResponse\022C\n\nRenameUser\022\031." +
+      "ChangeUserNameRpcRequest\032\032.ChangeUserNam" +
+      "eRpcResponse\022=\n\nSaveAvatar\022\026.SaveUserAva" +
+      "tarRequest\032\027.SaveUserAvatarResponse\022>\n\rg" +
+      "etUserAvatar\022\025.GetUserAvatarRequest\032\026.Ge" +
+      "tUserAvatarResponse\0228\n\013addNewImage\022\023.Add" +
+      "NewImageRequest\032\024.AddNewImageResponse\0228\n" +
+      "\013getUserInfo\022\023.GetUserInfoRequest\032\024.GetU" +
+      "serInfoResponseB\034\n\025web.service.user.grpc" +
+      "P\001\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -446,6 +469,24 @@ public final class User {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_AddNewImageResponse_descriptor,
         new java.lang.String[] { "Success", });
+    internal_static_GetUserInfoRequest_descriptor =
+      getDescriptor().getMessageTypes().get(30);
+    internal_static_GetUserInfoRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetUserInfoRequest_descriptor,
+        new java.lang.String[] { "UserId", });
+    internal_static_GetUserInfoResponse_descriptor =
+      getDescriptor().getMessageTypes().get(31);
+    internal_static_GetUserInfoResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetUserInfoResponse_descriptor,
+        new java.lang.String[] { "UserName", "City", "Country", "Description", "Avatar", "Following", "Followers", "Pots", "Status", });
+    internal_static_UserPots_descriptor =
+      getDescriptor().getMessageTypes().get(32);
+    internal_static_UserPots_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_UserPots_descriptor,
+        new java.lang.String[] { "PotsId", "Image", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

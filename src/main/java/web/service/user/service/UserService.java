@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import io.grpc.ManagedChannel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import web.service.grpc.*;
 import web.service.user.grpc.*;
 import web.service.user.model.*;
 import web.service.user.model.User;
@@ -33,6 +37,14 @@ public class UserService {
     private final SendingMailService sendingMailService;
     private final PasswordForgotTokenService passwordForgotTokenService;
     private final UserInfoRepository userInfoRepository;
+
+    @Autowired
+    @Qualifier("newsfeed-service")
+    private ManagedChannel newsfeedChannel;
+
+    @Autowired
+    @Qualifier("follow-service")
+    private ManagedChannel followChannel;
 
     public UserService(AuthenticationManager authenticationManager,
                        UserRepository userRepository,
@@ -310,17 +322,7 @@ public class UserService {
             userInfo.setAvatar(request.getImageSource());
             userInfo.getImages().add(request.getImageSource());
         }
-
-//        4/10/2020 delete image info and update model
-//        delete start
-//        Images userImage = imagesRepository.getByUserId(request.getUserId());
-//        if(userImage == null) {
-//            userImage = new Images(request.getUserId());
-//        }
-//
-//        userImage.getImageIds().add(request.getImageSource());
-//        imagesRepository.save(userImage);
-//        delete end
+        
         userInfoRepository.save(userInfo);
         response.setStatus(Status.SUCCESS);
         return response.build();
@@ -353,5 +355,47 @@ public class UserService {
         userInfoRepository.save(userInfo);
         response.setSuccess(true);
         return response.build();
+    }
+
+    public GetUserInfoResponse getUserInfo(GetUserInfoRequest request) {
+        String userID = request.getUserId();
+        GetUserPostListRequest.Builder getPostListRequest = GetUserPostListRequest.newBuilder();
+        GetFollowerAndFollowingRequest.Builder getFollowerAndFollowingRequest = GetFollowerAndFollowingRequest.newBuilder();
+        getPostListRequest.setUserId(userID);
+        getFollowerAndFollowingRequest.setUserId(userID);
+
+        GetUserInfoResponse.Builder getUserInfoResponse = GetUserInfoResponse.newBuilder();
+        NewsFeedServiceGrpc.NewsFeedServiceBlockingStub stub = NewsFeedServiceGrpc.newBlockingStub(newsfeedChannel);
+        FollowRpcServiceGrpc.FollowRpcServiceBlockingStub followStub = FollowRpcServiceGrpc.newBlockingStub(followChannel);
+        GetUserPostListResponse response = null;
+        GetFollowerResponse follower = null;
+        GetFollowingResponse following = null;
+
+        UserInfo userInfo = userInfoRepository.getByUserId(userID);
+        User user = userRepository.getById(userID);
+
+        try {
+            response = stub.getUserPostList(getPostListRequest.build());
+            follower = followStub.getFollower(getFollowerAndFollowingRequest.build());
+            following = followStub.getFollowing(getFollowerAndFollowingRequest.build());
+        }
+        catch (Exception e) {
+            getUserInfoResponse.setStatus(Status.INTERNAL_SERVER);
+        }
+
+
+
+        if(response != null && userInfo != null && follower != null && following != null) {
+            getUserInfoResponse.setStatus(Status.SUCCESS);
+            getUserInfoResponse.setUserName(user.getName());
+            getUserInfoResponse.setAvatar(userInfo.getAvatar());
+            getUserInfoResponse.setCity(userInfo.getCity());
+            getUserInfoResponse.setCountry(userInfo.getCountry());
+            getUserInfoResponse.setDescription(userInfo.getDescription());
+
+            follower.getFollowersList().stream().forEach(e -> {
+                String uerAvatar = userInfoRepository.getByUserId(e).getAvatar();
+            });
+        }
     }
 }

@@ -115,4 +115,10 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         responseObserver.onNext(userService.addNewImage(request));
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getUserInfo(GetUserInfoRequest request, StreamObserver<GetUserInfoResponse> responseObserver) {
+        responseObserver.onNext(userService.getUserInfo(request));
+        responseObserver.onCompleted();
+    }
 }

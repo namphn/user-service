@@ -191,6 +191,14 @@ public  abstract class UserService
         web.service.user.grpc.AddNewImageRequest request,
         com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done);
 
+    /**
+     * <code>rpc getUserInfo(.GetUserInfoRequest) returns (.GetUserInfoResponse);</code>
+     */
+    public abstract void getUserInfo(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.GetUserInfoRequest request,
+        com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserInfoResponse> done);
+
   }
 
   public static com.google.protobuf.Service newReflectiveService(
@@ -316,6 +324,14 @@ public  abstract class UserService
         impl.addNewImage(controller, request, done);
       }
 
+      @java.lang.Override
+      public  void getUserInfo(
+          com.google.protobuf.RpcController controller,
+          web.service.user.grpc.GetUserInfoRequest request,
+          com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserInfoResponse> done) {
+        impl.getUserInfo(controller, request, done);
+      }
+
     };
   }
 
@@ -368,6 +384,8 @@ public  abstract class UserService
             return impl.getUserAvatar(controller, (web.service.user.grpc.GetUserAvatarRequest)request);
           case 14:
             return impl.addNewImage(controller, (web.service.user.grpc.AddNewImageRequest)request);
+          case 15:
+            return impl.getUserInfo(controller, (web.service.user.grpc.GetUserInfoRequest)request);
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -412,6 +430,8 @@ public  abstract class UserService
             return web.service.user.grpc.GetUserAvatarRequest.getDefaultInstance();
           case 14:
             return web.service.user.grpc.AddNewImageRequest.getDefaultInstance();
+          case 15:
+            return web.service.user.grpc.GetUserInfoRequest.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -456,6 +476,8 @@ public  abstract class UserService
             return web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance();
           case 14:
             return web.service.user.grpc.AddNewImageResponse.getDefaultInstance();
+          case 15:
+            return web.service.user.grpc.GetUserInfoResponse.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -644,6 +666,14 @@ public  abstract class UserService
       web.service.user.grpc.AddNewImageRequest request,
       com.google.protobuf.RpcCallback<web.service.user.grpc.AddNewImageResponse> done);
 
+  /**
+   * <code>rpc getUserInfo(.GetUserInfoRequest) returns (.GetUserInfoResponse);</code>
+   */
+  public abstract void getUserInfo(
+      com.google.protobuf.RpcController controller,
+      web.service.user.grpc.GetUserInfoRequest request,
+      com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserInfoResponse> done);
+
   public static final
       com.google.protobuf.Descriptors.ServiceDescriptor
       getDescriptor() {
@@ -741,6 +771,11 @@ public  abstract class UserService
           com.google.protobuf.RpcUtil.<web.service.user.grpc.AddNewImageResponse>specializeCallback(
             done));
         return;
+      case 15:
+        this.getUserInfo(controller, (web.service.user.grpc.GetUserInfoRequest)request,
+          com.google.protobuf.RpcUtil.<web.service.user.grpc.GetUserInfoResponse>specializeCallback(
+            done));
+        return;
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -785,6 +820,8 @@ public  abstract class UserService
         return web.service.user.grpc.GetUserAvatarRequest.getDefaultInstance();
       case 14:
         return web.service.user.grpc.AddNewImageRequest.getDefaultInstance();
+      case 15:
+        return web.service.user.grpc.GetUserInfoRequest.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -829,6 +866,8 @@ public  abstract class UserService
         return web.service.user.grpc.GetUserAvatarResponse.getDefaultInstance();
       case 14:
         return web.service.user.grpc.AddNewImageResponse.getDefaultInstance();
+      case 15:
+        return web.service.user.grpc.GetUserInfoResponse.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -1074,6 +1113,21 @@ public  abstract class UserService
           web.service.user.grpc.AddNewImageResponse.class,
           web.service.user.grpc.AddNewImageResponse.getDefaultInstance()));
     }
+
+    public  void getUserInfo(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.GetUserInfoRequest request,
+        com.google.protobuf.RpcCallback<web.service.user.grpc.GetUserInfoResponse> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(15),
+        controller,
+        request,
+        web.service.user.grpc.GetUserInfoResponse.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          web.service.user.grpc.GetUserInfoResponse.class,
+          web.service.user.grpc.GetUserInfoResponse.getDefaultInstance()));
+    }
   }
 
   public static BlockingInterface newBlockingStub(
@@ -1155,6 +1209,11 @@ public  abstract class UserService
     public web.service.user.grpc.AddNewImageResponse addNewImage(
         com.google.protobuf.RpcController controller,
         web.service.user.grpc.AddNewImageRequest request)
+        throws com.google.protobuf.ServiceException;
+
+    public web.service.user.grpc.GetUserInfoResponse getUserInfo(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.GetUserInfoRequest request)
         throws com.google.protobuf.ServiceException;
   }
 
@@ -1342,6 +1401,18 @@ public  abstract class UserService
         controller,
         request,
         web.service.user.grpc.AddNewImageResponse.getDefaultInstance());
+    }
+
+
+    public web.service.user.grpc.GetUserInfoResponse getUserInfo(
+        com.google.protobuf.RpcController controller,
+        web.service.user.grpc.GetUserInfoRequest request)
+        throws com.google.protobuf.ServiceException {
+      return (web.service.user.grpc.GetUserInfoResponse) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(15),
+        controller,
+        request,
+        web.service.user.grpc.GetUserInfoResponse.getDefaultInstance());
     }
 
   }
