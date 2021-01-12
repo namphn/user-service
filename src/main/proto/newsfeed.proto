@@ -1,0 +1,23 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_generic_services = true;
+option java_package = "web.service.grpc";
+
+message GetUserPostListRequest {
+  string userId = 1;
+}
+
+message GetUserPostListResponse {
+  repeated UserPotsInfo posts = 1;
+}
+
+message UserPotsInfo {
+  string postId = 1;
+  string image = 2;
+}
+
+service NewsFeedService {
+  rpc getUserPostList (GetUserPostListRequest) returns (GetUserPostListResponse);
+}
+
+
