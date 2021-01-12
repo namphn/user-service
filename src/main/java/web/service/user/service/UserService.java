@@ -322,7 +322,7 @@ public class UserService {
             userInfo.setAvatar(request.getImageSource());
             userInfo.getImages().add(request.getImageSource());
         }
-        
+
         userInfoRepository.save(userInfo);
         response.setStatus(Status.SUCCESS);
         return response.build();
@@ -367,7 +367,7 @@ public class UserService {
         GetUserInfoResponse.Builder getUserInfoResponse = GetUserInfoResponse.newBuilder();
         NewsFeedServiceGrpc.NewsFeedServiceBlockingStub stub = NewsFeedServiceGrpc.newBlockingStub(newsfeedChannel);
         FollowRpcServiceGrpc.FollowRpcServiceBlockingStub followStub = FollowRpcServiceGrpc.newBlockingStub(followChannel);
-        GetUserPostListResponse response = null;
+        GetUserPostListResponse getUserPostListResponse = null;
         GetFollowerResponse follower = null;
         GetFollowingResponse following = null;
 
@@ -375,7 +375,7 @@ public class UserService {
         User user = userRepository.getById(userID);
 
         try {
-            response = stub.getUserPostList(getPostListRequest.build());
+            getUserPostListResponse = stub.getUserPostList(getPostListRequest.build());
             follower = followStub.getFollower(getFollowerAndFollowingRequest.build());
             following = followStub.getFollowing(getFollowerAndFollowingRequest.build());
         }
@@ -383,9 +383,7 @@ public class UserService {
             getUserInfoResponse.setStatus(Status.INTERNAL_SERVER);
         }
 
-
-
-        if(response != null && userInfo != null && follower != null && following != null) {
+        if(getUserPostListResponse != null && userInfo != null && follower != null && following != null) {
             getUserInfoResponse.setStatus(Status.SUCCESS);
             getUserInfoResponse.setUserName(user.getName());
             getUserInfoResponse.setAvatar(userInfo.getAvatar());
@@ -393,9 +391,29 @@ public class UserService {
             getUserInfoResponse.setCountry(userInfo.getCountry());
             getUserInfoResponse.setDescription(userInfo.getDescription());
 
-            follower.getFollowersList().stream().forEach(e -> {
-                String uerAvatar = userInfoRepository.getByUserId(e).getAvatar();
+            List<String> userFollowersAvatar = new ArrayList<String>();
+            follower.getFollowersList().forEach(e -> {
+                String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
+                userFollowersAvatar.add(userAvatar);
             });
+            getUserInfoResponse.addAllFollowers(userFollowersAvatar);
+
+            List<String> userFollowingAvatar = new ArrayList<String>();
+            following.getFollowingList().forEach(e -> {
+                String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
+                userFollowersAvatar.add(userAvatar);
+            });
+            getUserInfoResponse.addAllFollowers(userFollowingAvatar);
+
+            List<UserPots> userPots = new ArrayList<UserPots>();
+            getUserPostListResponse.getPostsList().forEach(e -> {
+                UserPots.Builder userPost = UserPots.newBuilder();
+                userPost.setImage(e.getImage());
+                userPost.setPotsId(e.getPostId());
+                userPots.add(userPost.build());
+            });
+            getUserInfoResponse.addAllPots(userPots);
         }
+        return  getUserInfoResponse.build();
     }
 }
