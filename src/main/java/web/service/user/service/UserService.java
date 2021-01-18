@@ -28,6 +28,8 @@ import java.util.List;
 public class UserService {
 
     private static int MAX_PAGABLE_USER = 50;
+    private static String DEFAULT_AVATAR = "images/default-avatar.png";
+    private static String AVATAR_RESOURCE = "/avatars/";
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -381,38 +383,60 @@ public class UserService {
         }
         catch (Exception e) {
             getUserInfoResponse.setStatus(Status.INTERNAL_SERVER);
+            return getUserInfoResponse.build();
         }
 
         if(getUserPostListResponse != null && userInfo != null && follower != null && following != null) {
             getUserInfoResponse.setStatus(Status.SUCCESS);
             getUserInfoResponse.setUserName(user.getName());
-            getUserInfoResponse.setAvatar(userInfo.getAvatar());
-            getUserInfoResponse.setCity(userInfo.getCity());
-            getUserInfoResponse.setCountry(userInfo.getCountry());
-            getUserInfoResponse.setDescription(userInfo.getDescription());
+            if(userInfo.getAvatar() != null ) getUserInfoResponse.setAvatar(userInfo.getAvatar());
+            else {
+                getUserInfoResponse.setAvatar(DEFAULT_AVATAR);
+            }
+            if(userInfo.getCity() != null ) getUserInfoResponse.setCity(userInfo.getCity());
+            if(userInfo.getCountry() != null ) getUserInfoResponse.setCountry(userInfo.getCountry());
+            if(userInfo.getDescription() != null ) getUserInfoResponse.setDescription(userInfo.getDescription());
 
             List<String> userFollowersAvatar = new ArrayList<String>();
-            follower.getFollowersList().forEach(e -> {
-                String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
-                userFollowersAvatar.add(userAvatar);
-            });
-            getUserInfoResponse.addAllFollowers(userFollowersAvatar);
+            if(follower.getFollowersList() != null) {
+                follower.getFollowersList().forEach(e -> {
+                    String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
+                    if(userAvatar != null && !userAvatar.isEmpty()) {
+                        userFollowersAvatar.add(AVATAR_RESOURCE + userAvatar);
+                    }
+                    else
+                    {
+                        userFollowersAvatar.add(DEFAULT_AVATAR);
+                    }
+                });
+                getUserInfoResponse.addAllFollowers(userFollowersAvatar);
+            }
 
             List<String> userFollowingAvatar = new ArrayList<String>();
-            following.getFollowingList().forEach(e -> {
-                String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
-                userFollowersAvatar.add(userAvatar);
-            });
-            getUserInfoResponse.addAllFollowers(userFollowingAvatar);
+            if(following.getFollowingList() != null) {
+                following.getFollowingList().forEach(e -> {
+                    String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
+                    if(userAvatar != null && !userAvatar.isEmpty()) {
+                        userFollowingAvatar.add(AVATAR_RESOURCE + userAvatar);
+                    }
+                    else
+                    {
+                        userFollowingAvatar.add(DEFAULT_AVATAR);
+                    }
+                });
+                getUserInfoResponse.addAllFollowers(userFollowingAvatar);
+            }
 
             List<UserPots> userPots = new ArrayList<UserPots>();
-            getUserPostListResponse.getPostsList().forEach(e -> {
-                UserPots.Builder userPost = UserPots.newBuilder();
-                userPost.setImage(e.getImage());
-                userPost.setPotsId(e.getPostId());
-                userPots.add(userPost.build());
-            });
-            getUserInfoResponse.addAllPots(userPots);
+            if(getUserPostListResponse.getPostsList() != null) {
+                getUserPostListResponse.getPostsList().forEach(e -> {
+                    UserPots.Builder userPost = UserPots.newBuilder();
+                    userPost.setImage(e.getImage());
+                    userPost.setPotsId(e.getPostId());
+                    userPots.add(userPost.build());
+                });
+                getUserInfoResponse.addAllPots(userPots);
+            }
         }
         return  getUserInfoResponse.build();
     }

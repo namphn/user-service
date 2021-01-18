@@ -29,7 +29,7 @@ public class BeanConfig {
 
     @Bean("newsfeed-service")
     ManagedChannel newsFeedGrpcBeanChanel(){
-        return ManagedChannelBuilder.forAddress("localhost", 6569).usePlaintext().build();
+        return ManagedChannelBuilder.forAddress("localhost", 6570).usePlaintext().build();
     }
 
     @Bean("follow-service")
