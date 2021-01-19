@@ -28,7 +28,7 @@ import java.util.List;
 public class UserService {
 
     private static int MAX_PAGABLE_USER = 50;
-    private static String DEFAULT_AVATAR = "images/default-avatar.png";
+    private static String DEFAULT_AVATAR = "/avatars/default-avatar.png";
     private static String AVATAR_RESOURCE = "/avatars/";
 
     private final AuthenticationManager authenticationManager;
@@ -334,7 +334,8 @@ public class UserService {
         UserInfo userInfo = userInfoRepository.getByUserId(request.getUserId());
         GetUserAvatarResponse.Builder response = GetUserAvatarResponse.newBuilder();
         if(userInfo != null) {
-            response.setAvatar(userInfo.getAvatar());
+            if(userInfo.getAvatar() == null) response.setAvatar(DEFAULT_AVATAR);
+            else response.setAvatar(userInfo.getAvatar());
         }
         return response.build();
     }
