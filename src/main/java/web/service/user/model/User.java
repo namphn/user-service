@@ -4,12 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import web.service.user.repository.UserRepository;
-
-import java.util.Set;
 
 @Data
 @Document(collection = "users")
