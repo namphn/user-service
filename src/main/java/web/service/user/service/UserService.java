@@ -398,7 +398,7 @@ public class UserService {
             if(userInfo.getCountry() != null ) getUserInfoResponse.setCountry(userInfo.getCountry());
             if(userInfo.getDescription() != null ) getUserInfoResponse.setDescription(userInfo.getDescription());
 
-            List<String> userFollowersAvatar = new ArrayList<String>();
+            List<String> userFollowersAvatar = new ArrayList<>();
             if(follower.getFollowersList() != null) {
                 follower.getFollowersList().forEach(e -> {
                     String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
@@ -413,7 +413,7 @@ public class UserService {
                 getUserInfoResponse.addAllFollowers(userFollowersAvatar);
             }
 
-            List<String> userFollowingAvatar = new ArrayList<String>();
+            List<String> userFollowingAvatar = new ArrayList<>();
             if(following.getFollowingList() != null) {
                 following.getFollowingList().forEach(e -> {
                     String userAvatar = userInfoRepository.getByUserId(e).getAvatar();
@@ -425,7 +425,7 @@ public class UserService {
                         userFollowingAvatar.add(DEFAULT_AVATAR);
                     }
                 });
-                getUserInfoResponse.addAllFollowers(userFollowingAvatar);
+                getUserInfoResponse.addAllFollowing(userFollowingAvatar);
             }
 
             List<UserPots> userPots = new ArrayList<UserPots>();
@@ -440,5 +440,12 @@ public class UserService {
             }
         }
         return  getUserInfoResponse.build();
+    }
+
+    public GetUserNameResponse getUserName(GetUserNameRequest request) {
+        User user = userRepository.getById(request.getUserId());
+        GetUserNameResponse.Builder response = GetUserNameResponse.newBuilder();
+        response.setUserName(user.getName());
+        return response.build();
     }
 }

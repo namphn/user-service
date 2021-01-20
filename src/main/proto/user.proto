@@ -160,6 +160,14 @@ message UserPots {
   string image = 2;
 }
 
+message GetUserNameRequest {
+  string userId = 1;
+}
+
+message GetUserNameResponse {
+  string userName = 1;
+}
+
 service UserService{
 
   // create a new account, save new email, password and send verification email
@@ -210,6 +218,10 @@ service UserService{
   // user add image
   rpc addNewImage(AddNewImageRequest) returns (AddNewImageResponse);
 
+  // get user information
   rpc getUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+
+  // get user name
+  rpc getUserName(GetUserNameRequest) returns (GetUserNameResponse);
 }
 
