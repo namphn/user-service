@@ -28,8 +28,8 @@ import java.util.List;
 public class UserService {
 
     private static int MAX_PAGABLE_USER = 50;
-    private static String DEFAULT_AVATAR = "/avatars/default-avatar.png";
-    private static String AVATAR_RESOURCE = "/avatars/";
+    private static String DEFAULT_AVATAR = "avatars/default-avatar.png";
+    private static String AVATAR_RESOURCE = "avatars/";
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -335,7 +335,7 @@ public class UserService {
         GetUserAvatarResponse.Builder response = GetUserAvatarResponse.newBuilder();
         if(userInfo != null) {
             if(userInfo.getAvatar() == null) response.setAvatar(DEFAULT_AVATAR);
-            else response.setAvatar(userInfo.getAvatar());
+            else response.setAvatar(AVATAR_RESOURCE + userInfo.getAvatar());
         }
         return response.build();
     }
